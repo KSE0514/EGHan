@@ -11,7 +11,7 @@ class DepositProducts(models.Model):
     join_member = models.TextField()
     join_way = models.TextField()
     spcl_cnd = models.TextField()
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='product_user')
 
 
 class DepositOptions(models.Model):

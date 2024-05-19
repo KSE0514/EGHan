@@ -80,12 +80,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'back.urls'
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://127.0.0.1:5173',
-#     'http://127.0.0.1:8000',
-#     'http://localhost:8000',
-#     'http://localhost:5173',
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:5173',
+]
 
 TEMPLATES = [
     {
@@ -158,4 +156,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+}
+
 AUTH_USER_MODEL = 'accounts.User'
+
+
