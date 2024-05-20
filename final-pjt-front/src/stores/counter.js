@@ -7,7 +7,7 @@ import axios from 'axios'
 export const useCounterStore = defineStore('counter', () => {
   const API_URL = 'http://127.0.0.1:8000'
   const router = useRouter()
-  const token = ref(null)
+  const token = ref(localStorage.getItem('token') || null)
 
   const isLogin = computed(() => {
     return token.value === null ? false : true
@@ -63,12 +63,12 @@ export const useCounterStore = defineStore('counter', () => {
       method: 'post',
       url: `${API_URL}/accounts/logout/`,
     })
-      .then((res) => {
+      .then((response) => {
         token.value = null
         // userInfo.value = []
         localStorage.removeItem('token')
         console.log('로그아웃')
-        router.push({ name: 'home' })
+        router.push({name:'home'})
       })
       .catch((err) => {
         console.log(err)

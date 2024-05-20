@@ -1,6 +1,10 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HomeView from './views/HomeView.vue';
+import { useCounterStore } from './stores/counter';
+
+const store = useCounterStore()
+
 </script>
 
 <template>
@@ -11,7 +15,7 @@ import HomeView from './views/HomeView.vue';
         <RouterLink :to="{name:'login'}">
             로그인
         </RouterLink> |
-        <a href="#">로그아웃</a>
+        <a @click="store.logout">로그아웃</a>
     </nav>
 
 <RouterView />
