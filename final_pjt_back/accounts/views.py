@@ -6,12 +6,14 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from .models import User
-from .serializers import CustomRegisterSerializer,CustomLoginSerializer
+from .serializers import CustomRegisterSerializer,CustomLoginSerializer,UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from django.contrib.auth.views import LoginView
-
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 # def signup(request):
@@ -75,9 +77,17 @@ def update(request):
 #     return render(request, 'accounts/login.html', context)
 
 
-def logout(request):
-    auth_logout(request)
-    return redirect('boards:index')
+# def logout(request):
+#     auth_logout(request)
+#     return redirect('boards:index')
+
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def user_info(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
 
 
 

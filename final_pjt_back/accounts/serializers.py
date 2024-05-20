@@ -2,6 +2,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import User
 from dj_rest_auth.serializers import LoginSerializer
+from django.contrib.auth import get_user_model
 
 class CustomLoginSerializer(LoginSerializer):
     email = None
@@ -31,3 +32,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.financial_products = self.cleaned_data.get('financial_products')
         user.save()
         return user
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ['pk','username', 'email','nickname','age', 'money','salary', 'financial_products','password']

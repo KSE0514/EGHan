@@ -1,6 +1,6 @@
 <template>
     <div>  
-      <label for="age">Age:</label>
+      <label for="age">나이:</label>
       <input type="number" v-model="age" id="age" required><br>
 
       <label for="money">자산:</label>

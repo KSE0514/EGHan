@@ -9,13 +9,16 @@ const store = useCounterStore()
 
 <template>
     <nav>
-        <RouterLink :to="{name:'signup'}">
-            회원가입
-        </RouterLink> |
-        <RouterLink :to="{name:'login'}">
-            로그인
-        </RouterLink> |
-        <a @click="store.logout">로그아웃</a>
+        <RouterLink :to="{name:'signup'}" v-if="!store.isLogin">
+            회원가입 |
+        </RouterLink> 
+        <RouterLink :to="{name:'login'}" v-if="!store.isLogin">
+            로그인 |
+        </RouterLink> 
+        <a href="#" @click="store.logout" v-if="store.isLogin">로그아웃</a>
+        <RouterLink :to="{name:'user'}" v-if="store.isLogin">
+            내정보
+        </RouterLink>
     </nav>
 
 <RouterView />

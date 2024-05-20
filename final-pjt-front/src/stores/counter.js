@@ -8,6 +8,7 @@ export const useCounterStore = defineStore('counter', () => {
   const API_URL = 'http://127.0.0.1:8000'
   const router = useRouter()
   const token = ref(localStorage.getItem('token') || null)
+  const userInfo = ref([])
 
   const isLogin = computed(() => {
     return token.value === null ? false : true
@@ -74,5 +75,25 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
-  return { signUp,logIn,isLogin,logout }
+
+  const getUserInfo = function() {
+    axios({
+      method:'get',
+      url:`${API_URL}/accounts/userinfo/`,
+      headers:{
+        Authorization:`Token ${token.value}`
+      }
+    }).then((response)=>{
+      userInfo.value = response.data
+      console.log(response.data)
+    }).catch((error)=>{
+      console.log(error)
+    })
+    
+  }
+
+  const updateProfile = function(){
+    
+  }
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo }
 })

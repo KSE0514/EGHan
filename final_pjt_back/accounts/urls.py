@@ -5,5 +5,6 @@ urlpatterns = [
     path('signup/', views.CustomRegisterView.as_view(), name='signup'),
     path('', include('dj_rest_auth.urls')),
     # path('logout/', views.logout, name = 'logout'),
+    path('userinfo/',views.user_info,name="user_info"),
     path('update/', views.update, name = 'update'),
 ]

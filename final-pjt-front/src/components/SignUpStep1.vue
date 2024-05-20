@@ -13,7 +13,7 @@
             <label for="password2">password confirmation:</label>
             <input type="password" v-model="password2" id="password2" required><br>
 
-            <label for="nickname">nickname:</label>
+            <label for="nickname">이름:</label>
             <input type="text" v-model="nickname" id="nickname" required><br>
 
             <button type="submit" v-if="!showStep2">다음</button>
