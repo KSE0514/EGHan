@@ -117,5 +117,21 @@ export const useCounterStore = defineStore('counter', () => {
       console.log(error)
     })
   }
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile }
+    
+  // 게시판
+    const articles = ref([])
+    const board = function() {
+      axios({
+        method: 'get', 
+        url: `${API_URL}/boards/`,
+      })
+      .then((res) => {
+        console.log(res.data)
+        // console.log('board 함수 작동')
+        articles.value = res.data
+        // console.log(articles.value)
+      })
+    }
+    
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles }
 })

@@ -6,6 +6,9 @@ import SignUpView from '@/views/SignUpView.vue'
 import LoginView from '@/views/LoginView.vue'
 import UserView from '@/views/UserView.vue'
 import UserUpdateView from '@/views/UserUpdateView.vue'
+import ProductView from '@/views/ProductView.vue'
+import BoardView from '@/views/BoardView.vue'
+import BoardDetailView from '@/views/BoardDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +37,21 @@ const router = createRouter({
       path:'/userinfoupdate',
       name:'userinfoupdate',
       component: UserUpdateView
+    },
+    {
+      path:'/boards',
+      name:'board',
+      component: BoardView
+    },
+    {
+      path:'/product',
+      name:'product',
+      component: ProductView
+    },
+    {
+      path:'/board/:id',
+      name:'board-detail',
+      component: BoardDetailView,
     },
   ]
 })
