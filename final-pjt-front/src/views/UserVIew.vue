@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>내 정보</h1>
+    <h1>UserInfo</h1>
   </div>
   <UserInfoView />
 </template>
