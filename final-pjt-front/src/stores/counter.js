@@ -92,8 +92,30 @@ export const useCounterStore = defineStore('counter', () => {
     
   }
 
-  const updateProfile = function(){
-    
+  const updateProfile = function(payload){
+    const username = payload.username
+    const password = payload.password
+    const nickname = payload.nickname
+    const email = payload.email
+    const age = payload.age
+    const money = payload.money
+    const salary = payload.salary
+    const financial_products = payload.financial_products
+
+    axios({
+      method:'patch',
+      url:`${API_URL}/accounts/update/`,
+      headers:{
+        Authorization:`Token ${token.value}`
+      },
+      data:{
+        username,email,password,nickname,age,money,salary,financial_products
+      }
+    }).then((response)=>{
+      console.log('회원정보 수정 완료')
+    }).catch((error)=>{
+      console.log(error)
+    })
   }
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo }
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile }
 })

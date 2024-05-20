@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from .models import User
-from .serializers import CustomRegisterSerializer,CustomLoginSerializer,UserSerializer
+from .serializers import CustomRegisterSerializer,CustomLoginSerializer,UserSerializer,CustomUserDetailsSerializer,UpdateProfileSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -14,6 +14,8 @@ from django.contrib.auth.views import LoginView
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from dj_rest_auth.views import LoginView, UserDetailsView
+from rest_framework import serializers
 
 # Create your views here.
 # def signup(request):
@@ -89,6 +91,51 @@ def user_info(request):
     serializer = UserSerializer(user)
     return Response(serializer.data)
 
+
+# class CustomUserDetailsView(UserDetailsView):
+#     serializer_class = CustomUserDetailsSerializer
+    
+#     def update(self, request, *args, **kwargs):
+#         partial = kwargs.pop('partial', False)
+#         instance = self.get_object()
+#         serializer = self.get_serializer(instance, data=request.data, partial=partial)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_update(serializer)
+#         return Response(serializer.data)
+
+#     def perform_update(self, serializer):
+#         serializer.save()
+
+class UpdateProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        user = request.user
+        serializer = UpdateProfileSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            print(f"Updated data: {user.username}, {user.email}, {user.nickname}, {user.age}, {user.money}, {user.salary}, {user.financial_products}")  # 디버깅용
+            serializer.save()
+            return Response({'message': '프로필이 업데이트되었습니다.'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class UpdateProfileView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def patch(self, request):
+#         user = request.user
+#         # 클라이언트에서 전송된 데이터로 사용자 정보 업데이트
+#         user.username = request.data.get('username', user.username)
+#         user.email = request.data.get('email', user.email)
+#         user.nickname=request.data.get('nickname', user.nickname)
+#         user.age = request.data.get('age', user.age)
+#         user.money = request.data.get('money', user.money)
+#         user.salary = request.data.get('salary',user.salary)
+#         user.financial_products = request.data.get('financial_products',user.financial_products)
+
+
+#         user.save()
+#         return Response({'message': '프로필이 업데이트되었습니다.'}, status=status.HTTP_200_OK)
 
 
 def change_password(request, user_pk):
