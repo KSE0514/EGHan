@@ -113,6 +113,7 @@ export const useCounterStore = defineStore('counter', () => {
       }
     }).then((response)=>{
       console.log('회원정보 수정 완료')
+      router.push({name:'user'})
     }).catch((error)=>{
       console.log(error)
     })

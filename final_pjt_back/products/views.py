@@ -145,3 +145,29 @@ def product_list(request):
     user = request.user  # 로그인된 사용자 정보
     # 여기서 user 정보를 사용하여 필요한 로직을 구현
     return render(request, 'products/product_list.html', {'user': user})
+
+
+
+
+
+# 환율 계산기
+# exchange/views.py
+from django.http import JsonResponse
+import requests
+import os
+from datetime import datetime
+
+def get_exchange_rate(request):
+    authkey = "icZiXFpY3WNb91kBIiiRhVlnlfW43P1z"
+    # authkey = os.getenv('EXCHANGE_API_KEY')  # 환경변수에서 API 키를 가져옵니다
+    print("API Key:", authkey)  # API 키를 출력하여 확인
+    if not authkey:
+        return JsonResponse({"error": "API key not found"}, status=500)
+    
+    url = f"https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey={authkey}&data=AP01"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse(data, safe=False)
+    else:
+        return JsonResponse({"error": "Failed to fetch data"}, status=response.status_code)

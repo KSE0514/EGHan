@@ -1,16 +1,21 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView,useRouter } from 'vue-router'
 import HomeView from './views/HomeView.vue';
 import { useCounterStore } from './stores/counter';
+import Exchange from './components/Exchange.vue';
 
 const store = useCounterStore()
+const router = useRouter()
+const gotoHome = function(){
+    router.push({name:'home'})
+}
 
 </script>
 
 <template>
     <nav id="nav" class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: rgb(109, 185, 255) !important;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#" style="color: white; ">EGHan</a>
+        <a class="navbar-brand" href="#" style="color: white; " @click="gotoHome">EGHan</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -25,9 +30,24 @@ const store = useCounterStore()
                 게시판</RouterLink>
             </li>
             <li class="nav-item">
-            <!-- <RouterLink class="nav-link" :to="{name: 'calculator'}"  style="color: white; ">
-                환율 계산기</RouterLink> -->
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" style="color : white;">환율 계산기</a>
             </li>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">환율 계산기</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <Exchange />
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
         </ul>
         <RouterLink class="nav-link" :to="{name:'signup'}" v-if="!store.isLogin">
             회원가입 |

@@ -10,5 +10,6 @@ urlpatterns = [
     # path('deposit-products/top_rate/',views.top_rate,name='top_rate'),
     path('api_test/',views.api_test),  # 데이터 조회 용 경로
     path('age/', views.age_recommend),
-    path('list/',views.product_list)
+    path('list/',views.product_list),
+    path('exchange/',views.get_exchange_rate),
 ]
