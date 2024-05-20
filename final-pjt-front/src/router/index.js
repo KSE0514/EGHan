@@ -9,6 +9,7 @@ import UserUpdateView from '@/views/UserUpdateView.vue'
 import ProductView from '@/views/ProductView.vue'
 import BoardView from '@/views/BoardView.vue'
 import BoardDetailView from '@/views/BoardDetailView.vue'
+import BoardCreateView from '@/views/BoardCreateView.vue'
 
 
 const router = createRouter({
@@ -53,6 +54,11 @@ const router = createRouter({
       path:'/board/:id',
       name:'board-detail',
       component: BoardDetailView,
+    },
+    {
+      path:'/board/create',
+      name: 'board-create',
+      component: BoardCreateView,
     },
   ]
 })

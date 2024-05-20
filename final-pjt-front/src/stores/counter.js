@@ -122,17 +122,50 @@ export const useCounterStore = defineStore('counter', () => {
   // 게시판
     const articles = ref([])
     const board = function() {
+      console.log(token.value)
       axios({
         method: 'get', 
         url: `${API_URL}/boards/`,
       })
       .then((res) => {
         console.log(res.data)
-        // console.log('board 함수 작동')
+        console.log('board 함수 작동')
         articles.value = res.data
         // console.log(articles.value)
       })
     }
+
+    const create = function(payload) {
+      const { title, content } = payload
+      console.log(`${API_URL}/boards/create/`)
+      axios({
+        method:'post',
+        url: `${API_URL}/boards/create/`,
+        data: {
+          title,content
+        },
+        headers: {
+          Authorization: `Token ${token.value}`
+        }
+      })
+      .then((res) => {
+        console.log(res.data)
+        router.push({name:'board'})
+      }).catch((error)=>{
+        console.log(error)
+      })
+    }
+  
+    // 댓글
+    const comment_create = function(article_id) {
+      axios({
+        method: 'post',
+        url:  `${API_URL}/boards/comment/create/${article_id}`,
+      })
+      .then((res) => {
+        console.log(res)
+      })
+    }
     
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles }
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token }
 })

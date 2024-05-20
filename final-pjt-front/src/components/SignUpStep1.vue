@@ -84,6 +84,9 @@ const goToStep2 = function(){
       <button type="submit" v-if="!showStep2" class="submit-button">Next</button>
     </form>
   </div>
+  <div v-if="showStep2">
+      <SignUpStep2 :email="email" :username="username" :password="password1" :nickname="nickname"/>
+  </div>
 </template>
 <script setup>
 import { useRoute,useRouter } from 'vue-router'

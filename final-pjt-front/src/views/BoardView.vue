@@ -1,6 +1,11 @@
 <template>
   <div>
     <h1>BoardView</h1>
+    <RouterLink :to="{name: 'board-create'}">
+      <button>작성하기</button>
+      <!-- <input type="submit" value="작성하기"> -->
+    </RouterLink>
+    <hr>
     <div v-if="store.articles">
       <ul v-for="article in store.articles" :key="article.id">
         <RouterLink class="nav-link" 
@@ -13,6 +18,7 @@
       </ul>
     </div>
   </div>
+  
 </template>
 
 <script setup>
