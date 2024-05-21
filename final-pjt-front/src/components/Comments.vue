@@ -10,8 +10,9 @@
     <!-- 댓글 리스트 출력 -->
     <div v-if="store.comments">
       <div class="card" v-for="comment in store.comments">
-        <div class="card-body">
-        {{ comment.content }} - {{ comment.username }}
+        <div class="card-body" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+        <div>{{ comment.content }} - {{ comment.username }}</div>
+        <div href="#" style="color: red;" @click="comment_del(comment.id)">x</div>
         </div>
       </div>
     </div>
@@ -35,6 +36,11 @@ const comment_cr = function() {
   }
   store.comment_create(payload, route.params.id)
   comment.value = ''
+}
+
+const comment_del = function (comment_id) {
+  console.log('댓글 삭제 확인용', comment_id)
+  store.comment_delete(route.params.id, comment_id)
 }
 
 onMounted(() => {

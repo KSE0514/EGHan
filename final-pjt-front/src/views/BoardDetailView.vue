@@ -23,8 +23,9 @@ import Comments from '@/components/Comments.vue'
 import { useCounterStore } from '@/stores/counter'
 import axios from 'axios';
 const store = useCounterStore()
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
+const router = useRouter()
 const API_URL = store.API_URL
 const id = route.params.id
 import { ref } from 'vue'

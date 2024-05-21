@@ -157,7 +157,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
   
-    // 댓글
+    // 댓글 생성
     const comment_create = function(payload, article_id) {
       const { content } = payload
       console.log('확인용', article_id)
@@ -197,7 +197,22 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
     
-
+    // 댓글 삭제
+    const comment_delete = function (article_id, comment_id) {
+      axios({
+        method: 'delete',
+        url: `${API_URL}/boards/comment/delete/${comment_id}`,
+        headers: {
+          Authorization: `Token ${token.value}`
+        }
+      })
+      .then((res) => {
+        // console.log(res)
+        console.log('댓글 삭제 완료')
+        comments_lst(article_id)
+        router.push({name: 'board-detail', params: {id: article_id}})
+      }).catch((err) => console.log(err))
+    }
 
     // 예금 상품 리스트 가져오기
     const products = ref([])
@@ -212,5 +227,5 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
 
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst  }
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst, comment_delete  }
 })

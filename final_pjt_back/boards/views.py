@@ -43,11 +43,15 @@ def create(request):
     # }
     # return render(request, 'boards/create.html', context)
 
-@api_view(['GET',])
+@api_view(['GET', 'DELETE'])
 def detail(request, pk):
     article = Article.objects.get(pk=pk)
-    serializer = ArticleSerializer(article)
-    return Response(serializer.data)
+    if request.method == "GET":
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data)
+    elif request.method == "DELETE":
+        article.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     # article = Article.objects.get(pk=pk)
     # comment_form = CommentForm()
     # comments = article.comment_set.all()
@@ -63,7 +67,7 @@ def delete(request, pk):
     article.delete()
     return redirect('boards:index')
 
-@api_view(['POST', 'GET'])
+@api_view(['POST', 'GET',])
 def comment_create(request, article_pk):
     article = Article.objects.get(pk=article_pk)
     if request.method == "POST":
@@ -91,8 +95,10 @@ def comment_create(request, article_pk):
     # }
     # return render(request, 'boards/detail.html', context)
 
+@api_view(['DELETE',])
 def comment_delete(request, comment_pk):
     comment = Comment.objects.get(pk=comment_pk)
     article_pk = comment.article.pk
     comment.delete()
-    return redirect('boards:detail', article_pk)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+    # return redirect('boards:detail', article_pk)
