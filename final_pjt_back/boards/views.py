@@ -63,12 +63,22 @@ def delete(request, pk):
     article.delete()
     return redirect('boards:index')
 
+@api_view(['POST', 'GET'])
 def comment_create(request, article_pk):
     article = Article.objects.get(pk=article_pk)
-    serializer = CommentSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save(user=request.user)
-        return Response(serializer, status=status.HTTP_201_CREATED)
+    if request.method == "POST":
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            # serializer.article = article
+            # serializer.save(user=request.user)
+            serializer.save(article=article, user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "GET":
+        comments = article.comment_set.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
     # comment = CommentForm(request.POST)
     # if comment.is_valid():
     #     comment = comment.save(commit=False)

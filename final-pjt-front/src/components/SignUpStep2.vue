@@ -59,7 +59,7 @@
         financial_products:financial_products.value,
     }
     store.signUp(payload)    
-    router.push('/')
+    // router.push('/')
   };
   </script>
   

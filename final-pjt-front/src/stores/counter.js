@@ -33,6 +33,7 @@ export const useCounterStore = defineStore('counter', () => {
       }
     }).then((response)=>{
       console.log('회원가입 완료')
+      logIn(payload)
     }).catch((error)=>{
       console.log(error)
     })
@@ -157,13 +158,40 @@ export const useCounterStore = defineStore('counter', () => {
     }
   
     // 댓글
-    const comment_create = function(article_id) {
+    const comment_create = function(payload, article_id) {
+      const { content } = payload
+      console.log('확인용', article_id)
+      // const id = article_id
+      // console.log(id)
       axios({
         method: 'post',
         url:  `${API_URL}/boards/comment/create/${article_id}`,
+        data: {
+          content
+        },
+        headers: {
+          Authorization: `Token ${token.value}`
+        }
       })
       .then((res) => {
+        // console.log('확인용 url', url)
         console.log(res)
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+    }
+
+    // 댓글 리스트
+    const comments = ref([])
+    const comments_lst = function (article_id) {
+      axios({
+        method: 'get',
+        url:  `${API_URL}/boards/comment/create/${article_id}`,
+      })
+      .then((res) => {
+        console.log('댓글 리스트 확인용', res.data)
+        comments.value = res.data
       })
     }
     
@@ -182,5 +210,5 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
 
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products }
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst  }
 })

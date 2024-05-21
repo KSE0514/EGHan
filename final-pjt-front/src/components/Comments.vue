@@ -1,27 +1,52 @@
 <template>
   <div>
     <hr>
-    <form @submit.prevent="store.comment_create(comment.article)">
+    <form @submit.prevent="comment_cr">
       <label for="comment">댓글 작성</label><br>
       <textarea name="comment" id="comment" cols="30" rows="3" style="width: 100%;" v-model="comment"></textarea>
       <input type="submit" value="등록">
     </form>
-    
+    <br>
     <!-- 댓글 리스트 출력 -->
-    
+    <div v-if="store.comments">
+      <div class="card" v-for="comment in store.comments">
+        <div class="card-body">
+        {{ comment.content }} - {{ comment.username }}
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useCounterStore } from '@/stores/counter'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 const store = useCounterStore()
 
 const comment = ref(null)
 
+const comment_cr = function() {
+  console.log('확인용1', route.params.id)
+  const payload = {
+    'content': comment.value
+  }
+  store.comment_create(payload, route.params.id)
+  comment.value = ''
+}
+
+onMounted(() => {
+  store.comments_lst(route.params.id)
+})
+
+
 </script>
 
 <style scoped>
-
+#comment_list {
+  background-color: rgba(255, 249, 224, 0.897);
+  border: 1px solid black;
+}
 </style>
