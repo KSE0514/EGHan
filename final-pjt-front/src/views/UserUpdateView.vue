@@ -22,9 +22,9 @@
       <label for="salary">연봉:</label>
       <input type="number" v-model="salary" id="salary" required><br>
 
-      <label for="financial_products">가입한 상품 목록:</label>
+      <!-- <label for="financial_products">가입한 상품 목록:</label>
       <textarea v-model="financial_products" id="financial_products"></textarea>
-      <br>
+      <br> -->
       <button>회원 정보 수정</button>
     </form>
   </div>

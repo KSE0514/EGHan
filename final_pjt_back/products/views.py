@@ -303,6 +303,19 @@ def saving_sign(request, fin_prdt_cd, user_pk):
     return Response(User_info.data, status=status.HTTP_200_OK)
 
 
+# 가입한 유저 정보 불러오기 위한 함수
+from .serializers import UserSerializer
+
+@api_view(['GET'])
+def user_profile(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response({'error': 'Authentication required'}, status=401)
+    
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
+
+
 # 환율 계산기
 # exchange/views.py
 from django.http import JsonResponse

@@ -19,4 +19,5 @@ urlpatterns = [
     path('exchange/',views.get_exchange_rate),
     path('deposit-product-detail/<str:fin_prdt_cd>/<int:user_pk>/',views.deposit_sign),
     path('saving-product-detail/<str:fin_prdt_cd>/<int:user_pk>/',views.saving_sign),
+    path('userinfo/',views.user_profile)
 ]

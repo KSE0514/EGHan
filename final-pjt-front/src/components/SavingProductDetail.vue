@@ -96,9 +96,9 @@ watch(() => props.productCode, () => {
     <button v-if="show" @click="signDeposit">가입 취소</button>
     <button v-else @click="signDeposit">가입 신청</button>
   </div>
-  <div v-else>
+  <!-- <div v-else>
     <p>Loading...</p>
-  </div>
+  </div> -->
 </template>
 
 <script setup>
@@ -135,8 +135,8 @@ const get_product_detail = () => {
 const show = ref(false)
 
 const check = function(){
-  store.getUserInfo()
-  if (product_detail.value.user.includes(store.userInfo.pk)){
+  store.get_user_info()
+  if (product_detail.value.user.includes(store.profile.pk)){
     show.value = true
   }else{
     show.value = false
@@ -147,7 +147,7 @@ const check = function(){
 const signDeposit = function() {
   axios({
     method:'post',
-    url:`${store.API_URL}/api/v1/saving-product-detail/${props.productCode}/${store.userInfo.pk}/`
+    url:`${store.API_URL}/api/v1/saving-product-detail/${props.productCode}/${store.profile.pk}/`
   }).then((response)=>{
     console.log('가입 완료 or 취소')
     get_product_detail().then((result) => { // Use the returned value here

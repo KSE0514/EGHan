@@ -84,10 +84,29 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
 
-  const getUserInfo = function() {
+  const profile = ref([])
+  const get_user_info = function() {
     axios({
       method:'get',
       url:`${API_URL}/accounts/userinfo/`,
+      headers:{
+        Authorization:`Token ${token.value}`
+      }
+    }).then((response)=>{
+      profile.value = response.data
+      console.log(response.data)
+    }).catch((error)=>{
+      console.log(error)
+    })
+    
+  }
+
+
+  
+  const getUserInfo = function() {
+    axios({
+      method:'get',
+      url:`${API_URL}/api/v1/userinfo/`,
       headers:{
         Authorization:`Token ${token.value}`
       }
@@ -99,6 +118,7 @@ export const useCounterStore = defineStore('counter', () => {
     })
     
   }
+  
 
   const updateProfile = function(payload){
     const username = payload.username
@@ -252,5 +272,5 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
 
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst, comment_delete, update}
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst, comment_delete, update,get_user_info,profile}
 })

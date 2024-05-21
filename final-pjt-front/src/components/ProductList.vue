@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Deposit Products</h2>
+    <h2>예금 상품</h2>
     <ul>
       <li v-for="product in products" :key="product.id">
         <h3 @click="goToDetail(product.fin_prdt_cd)">{{ product.fin_prdt_nm }}</h3>
