@@ -106,6 +106,11 @@ def deposit_products(request):
 #             return Response(serializer.data,status=status.HTTP_201_CREATED)
 #         return Response(serializer.data,status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def deposit_product_detail(request,fin_prdt_cd):
+    product = DepositProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
+    serializer = DepositProductsSerializer(product)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def deposit_product_options(request,fin_prdt_cd):

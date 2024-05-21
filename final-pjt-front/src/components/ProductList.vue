@@ -3,7 +3,7 @@
     <h2>Deposit Products</h2>
     <ul>
       <li v-for="product in products" :key="product.id">
-        <h3>{{ product.fin_prdt_nm }}</h3>
+        <h3 @click="goToDetail(product.fin_prdt_cd)">{{ product.fin_prdt_nm }}</h3>
         <p><strong>Product Code:</strong> {{ product.fin_prdt_cd }}</p>
         <p><strong>Company:</strong> {{ product.kor_co_nm }}</p>
         <!-- 다른 필드들도 필요에 따라 표시할 수 있습니다 -->
@@ -21,9 +21,10 @@
 </template>
 
 <script>
+// import router from '@/router';
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
-
+import { useRouter } from 'vue-router';
 export default {
   setup() {
     const products = ref([]);
@@ -43,10 +44,15 @@ export default {
       getProducts();
     });
 
+    const router = useRouter()
+    const goToDetail = function(productCode){
+      router.push(`/product/${productCode}`)
+    }
     return {
-      products
+      products,goToDetail
     };
   }
+
 }
 </script>
 

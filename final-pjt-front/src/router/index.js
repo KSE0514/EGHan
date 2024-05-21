@@ -10,7 +10,7 @@ import ProductView from '@/views/ProductView.vue'
 import BoardView from '@/views/BoardView.vue'
 import BoardDetailView from '@/views/BoardDetailView.vue'
 import BoardCreateView from '@/views/BoardCreateView.vue'
-
+import DetailView from '@/views/DetailView.vue'
 
 
 const router = createRouter({
@@ -50,6 +50,11 @@ const router = createRouter({
       path:'/product',
       name:'product',
       component: ProductView
+    },
+    {
+      path:'/product/:productCode',
+      name:'productdetail',
+      component: DetailView
     },
     {
       path:'/board/:id',
