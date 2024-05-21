@@ -6,6 +6,9 @@
     <p>작성일: {{ article.created_at }}</p>
     <p>마지막 수정일: {{ article.updated_at }}</p>
     <div style="border: 1px solid gray; height: 100px; padding: 10px;">{{ article.content }}</div>
+    <br>
+    <RouterLink :to="{name: 'board'}"><button>뒤로가기</button></RouterLink>
+    <button @click="delete_article">삭제</button>
     <hr>
     <!-- 댓글 -->
     
@@ -46,7 +49,16 @@ onMounted(() => {
   detail()
 })
 
-
+const delete_article = function() {
+  axios({
+    method: 'delete',
+    url: `${API_URL}/boards/detail/${id}`
+  })
+  .then((res) =>{
+    console.log('삭제 완료')
+    router.push({name: 'board'})
+  })
+}
 
 </script>
 

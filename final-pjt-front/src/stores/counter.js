@@ -179,6 +179,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
       .catch((error) => {
         console.error(error);
+        comments_lst(article_id)
       })
     }
 
