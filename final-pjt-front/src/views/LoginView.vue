@@ -10,6 +10,7 @@
 
       <input type="submit" value="로그인">
     </form>
+    <p v-if="loginError" style="color: red;">로그인 정보가 일치하지 않습니다. 다시 시도해주세요.</p>
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import { useCounterStore } from '@/stores/counter';
 const store = useCounterStore()
 const username = ref(null)
 const password = ref(null)
+const loginError = ref(false)
 
 const login = function() {
   const payload ={
@@ -27,8 +29,10 @@ const login = function() {
     password:password.value,
   }
   store.logIn(payload)
+    .catch((error) => {
+      loginError.value = true; // 로그인 실패 시 로그인 오류를 표시
+    });
 }
-
 </script>
 
 <style scoped>

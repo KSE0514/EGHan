@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
+from accounts.serializers import UserSerializer
 
 # Create your views here.
 
@@ -252,7 +253,25 @@ def product_list(request):
     return render(request, 'products/product_list.html', {'user': user})
 
 
-
+# 상품 가입하기
+@api_view(['POST'])
+def deposit_sign(request, fin_prdt_cd, user_pk):
+    # cd에 맞는 적금 정보를 가지고옴
+    deposit_info = DepositProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
+    # user_pk에 맞는 유저 정보를 가지고옴
+    User_info = User.objects.get(pk=user_pk)
+    # 만약 유저의 deposit(Manytomanyfield)에서 이미 존재한다면?
+    if deposit_info in User_info.product_user.all():
+        # 삭제
+        User_info.product_user.remove(deposit_info)
+    else:
+        # 없으면 추가
+        User_info.product_user.add(deposit_info)
+    User_info.save()
+    # 최신화 된 유저정보를 Response로 반환하기 위해 직렬화
+    User_info = UserSerializer(User_info)
+    # 반환
+    return Response(User_info.data, status=status.HTTP_200_OK)
 
 
 # 환율 계산기

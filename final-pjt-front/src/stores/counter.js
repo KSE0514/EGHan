@@ -57,6 +57,13 @@ export const useCounterStore = defineStore('counter', () => {
       router.push({name:'home'})
     }).catch((error)=>{
       console.log(error)
+          if (error.response.status === 400) {
+      // 로그인 정보가 일치하지 않을 때 경고창 띄우기
+      alert('로그인 정보가 일치하지 않습니다. 다시 시도해주세요.');
+    } else {
+      // 기타 오류 처리
+      console.error('로그인 오류:', error);
+    }
     })
   }
 

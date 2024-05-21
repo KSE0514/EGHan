@@ -16,4 +16,5 @@ urlpatterns = [
     path('save-saving-products/',views.save_saving_products,name='save_saving_products'),
     path('deposit-saving-products/',views.deposit_saving_products,name='deposit_saving_products'),
     path('exchange/',views.get_exchange_rate),
+    path('deposit-product-detail/<str:fin_prdt_cd>/<int:user_pk>/',views.deposit_sign),
 ]
