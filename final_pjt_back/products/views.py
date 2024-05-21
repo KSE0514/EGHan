@@ -221,6 +221,14 @@ def deposit_saving_products(request):
         serializers = SavingProductsSerializer(products,many=True)
         return Response(serializers.data)
 
+
+@api_view(['GET'])
+def saving_product_detail(request,fin_prdt_cd):
+    product = SavingProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
+    serializer = SavingProductsSerializer(product)
+    return Response(serializer.data)
+
+
 # @api_view(['GET'])
 # def top_rate(request):
 #     top_rate_option = DepositOptions.objects.order_by('-intr_rate2')
@@ -267,6 +275,27 @@ def deposit_sign(request, fin_prdt_cd, user_pk):
     else:
         # 없으면 추가
         User_info.product_user.add(deposit_info)
+    User_info.save()
+    # 최신화 된 유저정보를 Response로 반환하기 위해 직렬화
+    User_info = UserSerializer(User_info)
+    # 반환
+    return Response(User_info.data, status=status.HTTP_200_OK)
+
+
+#적금 가입
+@api_view(['POST'])
+def saving_sign(request, fin_prdt_cd, user_pk):
+    # cd에 맞는 적금 정보를 가지고옴
+    saving_info = SavingProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
+    # user_pk에 맞는 유저 정보를 가지고옴
+    User_info = User.objects.get(pk=user_pk)
+    # 만약 유저의 deposit(Manytomanyfield)에서 이미 존재한다면?
+    if saving_info in User_info.savingproduct_user.all():
+        # 삭제
+        User_info.savingproduct_user.remove(saving_info)
+    else:
+        # 없으면 추가
+        User_info.savingproduct_user.add(saving_info)
     User_info.save()
     # 최신화 된 유저정보를 Response로 반환하기 위해 직렬화
     User_info = UserSerializer(User_info)

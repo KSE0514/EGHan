@@ -15,6 +15,8 @@ urlpatterns = [
     path('list/',views.product_list),
     path('save-saving-products/',views.save_saving_products,name='save_saving_products'),
     path('deposit-saving-products/',views.deposit_saving_products,name='deposit_saving_products'),
+    path('saving-product-detail/<str:fin_prdt_cd>/', views.saving_product_detail),
     path('exchange/',views.get_exchange_rate),
     path('deposit-product-detail/<str:fin_prdt_cd>/<int:user_pk>/',views.deposit_sign),
+    path('saving-product-detail/<str:fin_prdt_cd>/<int:user_pk>/',views.saving_sign),
 ]

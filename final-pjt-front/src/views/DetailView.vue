@@ -4,6 +4,7 @@
     <p><strong>Product Code:</strong> {{ productCode }}</p>
     <!-- 여기에 다른 상품 세부 정보를 표시할 수 있습니다 -->
     <ProductDetail :product-code="productCode" />
+    <SavingProductDetail :product-code="productCode" />
   </div>
 </template>
 
@@ -11,11 +12,13 @@
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import ProductDetail from '@/components/ProductDetail.vue';
+import SavingProductDetail from '@/components/SavingProductDetail.vue';
 
 export default {
   components: {
-    ProductDetail
-  },
+    ProductDetail,
+    SavingProductDetail
+},
   setup() {
     const route = useRoute();
     const productCode = ref(null);
