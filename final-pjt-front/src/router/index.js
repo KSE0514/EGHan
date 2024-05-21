@@ -12,6 +12,7 @@ import BoardDetailView from '@/views/BoardDetailView.vue'
 import BoardCreateView from '@/views/BoardCreateView.vue'
 import DetailView from '@/views/DetailView.vue'
 import BoardUpdateView from '@/views/BoardUpdateView.vue'
+import MapView from '@/views/MapView.vue'
 
 
 const router = createRouter({
@@ -71,6 +72,11 @@ const router = createRouter({
       path: '/board/update/:id',
       name: 'board-update',
       component: BoardUpdateView,
+    },
+    {
+      path: '/board/map',
+      name: 'map',
+      component: MapView,
     },
   ]
 })

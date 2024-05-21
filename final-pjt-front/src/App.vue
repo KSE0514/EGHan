@@ -30,6 +30,10 @@ const gotoHome = function(){
                 게시판</RouterLink>
             </li>
             <li class="nav-item">
+            <RouterLink class="nav-link" :to="{name: 'map'}" style="color: white; ">
+                지도</RouterLink>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" style="color : white;">환율 계산기</a>
             </li>
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
