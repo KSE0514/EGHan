@@ -176,10 +176,11 @@ export const useCounterStore = defineStore('counter', () => {
       .then((res) => {
         // console.log('확인용 url', url)
         console.log(res)
+        comments_lst(article_id)
       })
       .catch((error) => {
         console.error(error);
-        comments_lst(article_id)
+
       })
     }
 
