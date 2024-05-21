@@ -164,6 +164,24 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
   
+    const update = function(payload) {
+      const {title, content, article_id} = payload
+      axios({
+        method: 'put',
+        url: `${API_URL}/boards/detail/${article_id}`,
+        data: {
+          title, content, article_id
+        },
+        headers: {
+          Authorization: `Token ${token.value}`
+        }
+      })
+      .then((res) =>{
+        console.log('수정 완료')
+        router.push({name: 'board-detail', params: {id: article_id}})
+      })
+    }
+
     // 댓글 생성
     const comment_create = function(payload, article_id) {
       const { content } = payload
@@ -234,5 +252,5 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
 
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst, comment_delete  }
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst, comment_delete, update}
 })

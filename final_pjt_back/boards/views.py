@@ -43,7 +43,7 @@ def create(request):
     # }
     # return render(request, 'boards/create.html', context)
 
-@api_view(['GET', 'DELETE'])
+@api_view(['GET', 'DELETE', 'PUT',])
 def detail(request, pk):
     article = Article.objects.get(pk=pk)
     if request.method == "GET":
@@ -52,6 +52,12 @@ def detail(request, pk):
     elif request.method == "DELETE":
         article.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    elif request.method == "PUT":
+        serializer = ArticleSerializer(article, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     # article = Article.objects.get(pk=pk)
     # comment_form = CommentForm()
     # comments = article.comment_set.all()

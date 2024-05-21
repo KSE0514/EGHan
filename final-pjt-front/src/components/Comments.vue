@@ -12,7 +12,7 @@
       <div class="card" v-for="comment in store.comments">
         <div class="card-body" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
         <div>{{ comment.content }} - {{ comment.username }}</div>
-        <div href="#" style="color: red;" @click="comment_del(comment.id)">x</div>
+        <div v-if="comment.user === store.userInfo.pk" href="#" style="color: red;" @click="comment_del(comment.id)">x</div>
         </div>
       </div>
     </div>
@@ -31,6 +31,7 @@ const comment = ref(null)
 
 const comment_cr = function() {
   console.log('확인용1', route.params.id)
+  console.log('유저 확인용', store.userInfo)
   const payload = {
     'content': comment.value
   }
@@ -45,6 +46,7 @@ const comment_del = function (comment_id) {
 
 onMounted(() => {
   store.comments_lst(route.params.id)
+  store.getUserInfo()
 })
 
 
