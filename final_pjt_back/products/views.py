@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 import requests
 from django.http import JsonResponse
-from .serializers import DepositProductsSerializer,DepositOptionsSerializer
-from .models import DepositProducts,DepositOptions
+from .serializers import DepositProductsSerializer,DepositOptionsSerializer,SavingProductsSerializer,SavingOptionsSerializer
+from .models import DepositProducts,DepositOptions, SavingProducts, SavingOptions
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
@@ -93,12 +93,12 @@ def save_deposit_products(request):
 
     return JsonResponse({'message':'저장완료'})
 
-# @api_view(['GET','POST'])
-# def deposit_products(request):
-#     if request.method == 'GET':
-#         products = DepositProducts.objects.all()
-#         serializers = DepositProductsSerializer(products,many=True)
-#         return Response(serializers.data)
+@api_view(['GET','POST'])
+def deposit_products(request):
+    if request.method == 'GET':
+        products = DepositProducts.objects.all()
+        serializers = DepositProductsSerializer(products,many=True)
+        return Response(serializers.data)
 #     if request.method == 'POST':
 #         serializer = DepositProductsSerializer(data=request.data)
 #         if serializer.is_valid():
@@ -107,13 +107,113 @@ def save_deposit_products(request):
 #         return Response(serializer.data,status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(['GET'])
-# def deposit_product_options(request,fin_prdt_cd):
-#     product = DepositOptions.objects.filter(fin_prdt_cd=fin_prdt_cd)
-#     serializer = DepositOptionsSerializer(product,many=True)
-#     return Response(serializer.data)
+@api_view(['GET'])
+def deposit_product_options(request,fin_prdt_cd):
+    product = DepositOptions.objects.filter(fin_prdt_cd=fin_prdt_cd)
+    serializer = DepositOptionsSerializer(product,many=True)
+    return Response(serializer.data)
 
 
+
+#적금
+@api_view(['GET'])
+def api_test_saving(request):
+    URL = BASE_URL + 'savingProductsSearch.json'
+    params = {
+        'auth':API_KEY,
+        'topFinGrpNo': '020000',
+        'pageNo':1,
+    }
+    response = requests.get(URL, params=params).json()
+    return JsonResponse({'response':response})
+
+
+@api_view(['GET'])
+def save_saving_products(request):
+    URL = BASE_URL + 'savingProductsSearch.json'
+    params = {
+        'auth': API_KEY,
+        'topFinGrpNo': '020000',
+        'pageNo': 1,
+    }
+    response = requests.get(URL, params=params).json()
+    result = response.get('result')
+
+    if not result:
+        return JsonResponse({'message': 'API 응답 데이터가 없습니다.'}, status=400)
+
+    base_list = result.get('baseList')
+    option_list = result.get('optionList')
+
+    if not base_list or not option_list:
+        return JsonResponse({'message': 'baseList 또는 optionList 데이터가 없습니다.'}, status=400)
+
+    # SavingProducts 저장
+    for li in base_list:
+        fin_prdt_cd = li.get('fin_prdt_cd')
+        kor_co_nm = li.get('kor_co_nm')
+        fin_prdt_nm = li.get('fin_prdt_nm')
+        etc_note = li.get('etc_note')
+        join_deny = li.get('join_deny')
+        join_member = li.get('join_member')
+        join_way = li.get('join_way')
+        spcl_cnd = li.get('spcl_cnd')
+
+        save_data = {
+            'fin_prdt_cd': fin_prdt_cd,
+            'kor_co_nm': kor_co_nm,
+            'fin_prdt_nm': fin_prdt_nm,
+            'etc_note': etc_note,
+            'join_deny': join_deny,
+            'join_member': join_member,
+            'join_way': join_way,
+            'spcl_cnd': spcl_cnd,
+        }
+
+        serializer = SavingProductsSerializer(data=save_data)
+        if serializer.is_valid():
+            if not SavingProducts.objects.filter(fin_prdt_cd=fin_prdt_cd).exists():
+                serializer.save()
+            else:
+                print(f"SavingProducts with fin_prdt_cd {fin_prdt_cd} already exists.")
+        else:
+            print(serializer.errors)  # 유효성 검사 오류 출력
+
+    # SavingOptions 저장
+    for li in option_list:
+        fin_prdt_cd = li.get('fin_prdt_cd')
+        intr_rate_type_nm = li.get('intr_rate_type_nm')
+        intr_rate = li.get('intr_rate')
+        intr_rate2 = li.get('intr_rate2')
+        save_trm = li.get('save_trm')
+
+        data = {
+            'fin_prdt_cd': fin_prdt_cd,
+            'intr_rate_type_nm': intr_rate_type_nm,
+            'intr_rate': intr_rate,
+            'intr_rate2': intr_rate2,
+            'save_trm': save_trm,
+        }
+
+        serializer = SavingOptionsSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            try:
+                product = SavingProducts.objects.get(fin_prdt_cd=fin_prdt_cd)
+                if not SavingOptions.objects.filter(product=product, intr_rate=intr_rate, intr_rate_type_nm=intr_rate_type_nm, intr_rate2=intr_rate2, save_trm=save_trm).exists():
+                    serializer.save(product=product)
+            except SavingProducts.DoesNotExist:
+                print(f"SavingProducts with fin_prdt_cd {fin_prdt_cd} does not exist.")
+        else:
+            print(serializer.errors)  # 유효성 검사 오류 출력
+
+    return JsonResponse({'message': '저장완료'})
+
+@api_view(['GET','POST'])
+def deposit_saving_products(request):
+    if request.method == 'GET':
+        products = SavingProducts.objects.all()
+        serializers = SavingProductsSerializer(products,many=True)
+        return Response(serializers.data)
 
 # @api_view(['GET'])
 # def top_rate(request):
@@ -158,7 +258,7 @@ import os
 from datetime import datetime
 
 def get_exchange_rate(request):
-    authkey = "icZiXFpY3WNb91kBIiiRhVlnlfW43P1z"
+    authkey = "WkgQAiW98R1p0dGJw4ssv16equukjVKB"
     # authkey = os.getenv('EXCHANGE_API_KEY')  # 환경변수에서 API 키를 가져옵니다
     print("API Key:", authkey)  # API 키를 출력하여 확인
     if not authkey:

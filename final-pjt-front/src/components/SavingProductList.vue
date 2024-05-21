@@ -2,7 +2,7 @@
   <div>
     <h2>Deposit Products</h2>
     <ul>
-      <li v-for="product in products" :key="product.id">
+      <li v-for="product in savingproducts" :key="product.id">
         <h3>{{ product.fin_prdt_nm }}</h3>
         <p><strong>Product Code:</strong> {{ product.fin_prdt_cd }}</p>
         <p><strong>Company:</strong> {{ product.kor_co_nm }}</p>
@@ -26,14 +26,14 @@ import { onMounted, ref } from 'vue';
 
 export default {
   setup() {
-    const products = ref([]);
+    const savingproducts = ref([]);
 
     const getProducts = () => {
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/v1/deposit-products/'
+        url: 'http://127.0.0.1:8000/api/v1/deposit-saving-products/'
       }).then((response) => {
-        products.value = response.data;
+        savingproducts.value = response.data;
       }).catch((error) => {
         console.log(error);
       });
@@ -44,7 +44,7 @@ export default {
     });
 
     return {
-      products
+      savingproducts
     };
   }
 }

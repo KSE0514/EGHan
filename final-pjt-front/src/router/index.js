@@ -12,6 +12,7 @@ import BoardDetailView from '@/views/BoardDetailView.vue'
 import BoardCreateView from '@/views/BoardCreateView.vue'
 
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

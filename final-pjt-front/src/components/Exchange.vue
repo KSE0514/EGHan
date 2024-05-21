@@ -20,8 +20,8 @@
     </div>
 
     <div>
-      <p>{{ result }}</p>
-      <p v-if="exchangeRate" style="color: gray;">1 {{ fromCurrency }} = {{ exchangeRate }} {{ toCurrency }}</p>
+      <p v-if="exchangeRate !== null">1 {{ fromCurrency }} = {{ exchangeRate }} {{ toCurrency }}</p>
+      <p v-else style="color: red;">환율 정보를 가져올 수 없습니다.</p>
     </div>
   </div>
 </template>
@@ -43,16 +43,26 @@ export default {
   },
   methods: {
     async fetchExchangeRates() {
+      console.log('fetchExchangeRates 호출됨');
       try {
         const response = await axios.get('http://localhost:8000/api/v1/exchange/');
+        console.log('API 호출 성공');
         const data = response.data;
-        console.log('API 응답 데이터:', data); // 콘솔 로그 추가
-        this.currencies = data;  // 응답 데이터를 currencies 배열에 저장
-        data.forEach(rate => {
-          this.exchangeRates[rate.cur_unit] = parseFloat(rate.deal_bas_r.replace(',', ''));
-        });
-        console.log('환율 데이터:', this.exchangeRates); // 콘솔 로그 추가
-        this.convertFromTo(); // 초기 변환 수행
+        console.log('API 응답 데이터 타입:', typeof data); // 응답 데이터 타입 로그 추가
+        console.log('API 응답 데이터 길이:', Array.isArray(data) ? data.length : 'N/A'); // 응답 데이터 길이 로그 추가
+        console.log('API 응답 데이터:', JSON.stringify(data, null, 2)); // 응답 데이터 상세 로그 추가
+        
+        // 데이터가 배열인지 확인 후 처리
+        if (Array.isArray(data) && data.length > 0) {
+          this.currencies = data;  // 응답 데이터를 currencies 배열에 저장
+          data.forEach(rate => {
+            this.exchangeRates[rate.cur_unit] = parseFloat(rate.deal_bas_r.replace(',', ''));
+          });
+          console.log('환율 데이터:', this.exchangeRates); // 콘솔 로그 추가
+          this.convertFromTo(); // 초기 변환 수행
+        } else {
+          console.error('API 응답 데이터가 비어 있거나 유효하지 않습니다.');
+        }
       } catch (error) {
         console.error('Error fetching exchange rates:', error);
       }
@@ -103,6 +113,7 @@ export default {
     },
   },
   mounted() {
+    console.log('mounted hook 호출됨');
     this.fetchExchangeRates();
   },
   watch: {

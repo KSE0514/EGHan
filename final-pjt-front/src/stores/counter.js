@@ -167,5 +167,20 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
     
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token }
+
+
+    // 예금 상품 리스트 가져오기
+    const products = ref([])
+    const get_products = function(){
+      axios({
+        method:'get',
+        url:`${API_URL}/api/v1/deposit-products/`
+      }).then((response)=>{
+        products.value = response.data
+      }).catch((error)=>{
+        console.log(error)
+      })
+    }
+
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products }
 })
