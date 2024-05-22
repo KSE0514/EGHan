@@ -230,6 +230,12 @@ def saving_product_detail(request,fin_prdt_cd):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def saving_product_options(request,fin_prdt_cd):
+    product = SavingOptions.objects.filter(fin_prdt_cd=fin_prdt_cd)
+    serializer = SavingOptionsSerializer(product,many=True)
+    return Response(serializer.data)
+
 # @api_view(['GET'])
 # def top_rate(request):
 #     top_rate_option = DepositOptions.objects.order_by('-intr_rate2')
@@ -522,6 +528,7 @@ def recommend_products_by_money(request):
     # 추천 상품을 직렬화하여 응답으로 보냄 (필요시 직렬화 과정 추가 필요)
     deposit_serializer = DepositProductsSerializer(recommended_deposit_products, many=True)
     saving_serializer = SavingProductsSerializer(recommended_saving_products, many=True)
+
 
     # 직렬화된 결과를 정렬
     sorted_deposit_products = sorted(deposit_serializer.data, key=lambda x: sorted_product_codes.index(x['fin_prdt_cd']))[:5]

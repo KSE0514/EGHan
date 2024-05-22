@@ -1,24 +1,27 @@
 <template>
   <div>
-    <h2>적금 상품</h2>
-    <ul>
-      <li v-for="product in savingproducts" :key="product.id">
-        <div @click="goToDetail(product.fin_prdt_cd)">
-          <h3>{{ product.fin_prdt_nm }}</h3>
-          <p><strong>Product Code:</strong> {{ product.fin_prdt_cd }}</p>
-          <p><strong>Company:</strong> {{ product.kor_co_nm }}</p>
-        </div>
-        <!-- 다른 필드들도 필요에 따라 표시할 수 있습니다 -->
-        <hr>
-        <!-- <h4>Options</h4>
-        <ul>
-          <li v-for="option in product.options" :key="option.id">
-            <p><strong>Interest Rate Type:</strong> {{ option.intr_rate_type_nm }}</p>
-            <p><strong>Interest Rate:</strong> {{ option.intr_rate }}</p>
-          </li>
-        </ul> -->
-      </li>
-    </ul>
+    <h2>적금 상품 비교</h2>
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>상품명</th>
+          <th v-for="term in displayTerms" :key="term">{{ term }}개월</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="product in products" :key="product.id">
+          <td @click="goToDetail(product.fin_prdt_cd)">{{ product.fin_prdt_nm }}</td>
+          <td v-for="term in displayTerms" :key="term">
+            <ul>
+              <li v-if="hasOption(product, term)" v-for="option in getProductOptionsByTerm(product, term)" :key="option.id">
+                {{ option.intr_rate }}%
+              </li>
+              <li v-else>-</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -26,25 +29,57 @@
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 export default {
   setup() {
-    const savingproducts = ref([]);
+    const products = ref([]);
+    const terms = ref([]);
+    const displayTerms = ref([6, 12, 24, 36]);
 
     const getProducts = () => {
       axios({
         method: 'get',
         url: 'http://127.0.0.1:8000/api/v1/deposit-saving-products/'
       }).then((response) => {
-        savingproducts.value = response.data;
+        products.value = response.data;
+        response.data.forEach(product => {
+          getOptions(product.fin_prdt_cd);
+        });
       }).catch((error) => {
         console.log(error);
       });
     }
 
+    const getOptions = (productCode) => {
+      axios({
+        method: 'get',
+        url: `http://127.0.0.1:8000/api/v1/saving-product-options/${productCode}`
+      }).then((response) => {
+        const product = products.value.find(prod => prod.fin_prdt_cd === productCode);
+        if (product) {
+          product.options = response.data;
+          response.data.forEach(option => {
+            if (!terms.value.includes(option.save_trm) && displayTerms.value.includes(option.save_trm)) {
+              terms.value.push(option.save_trm);
+            }
+          });
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+
+    const getProductOptionsByTerm = (product, term) => {
+      return product.options.filter(option => option.save_trm === term);
+    }
+
+    const hasOption = (product, term) => {
+      return getProductOptionsByTerm(product, term).length > 0;
+    }
+
     onMounted(() => {
       getProducts();
     });
-
 
     const router = useRouter()
     const goToDetail = function(productCode){
@@ -52,13 +87,42 @@ export default {
     }
 
     return {
-      savingproducts,goToDetail
+      products,
+      displayTerms,
+      getProductOptionsByTerm,
+      hasOption,
+      goToDetail
     };
   }
 }
 </script>
 
-
 <style scoped>
-/* 스타일 정의 */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.product-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.product-table td ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.product-table td ul li {
+  margin-bottom: 5px;
+}
 </style>

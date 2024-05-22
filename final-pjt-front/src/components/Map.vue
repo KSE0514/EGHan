@@ -4,7 +4,6 @@
       <h1>근처 은행 검색</h1>
       <p class="instruction-text"></p>
       <div class="search-input">
-        <!-- Added city selection dropdown -->
         <select v-model="selectedCity">
           <option value="">지역 선택</option>
           <option value="서울">서울</option>
@@ -56,20 +55,25 @@ export default {
       ps: null,
       infowindow: null,
       markers: [],
-      keyword: '', // 검색어 추가
-      selectedCity: '' // Selected city added
+      keyword: '',
+      selectedCity: '',
+      currentLocationMarker: null // 현재 위치 마커를 저장할 변수 추가
     };
   },
   mounted() {
     this.loadKakaoMapScript().then(() => {
-      var mapContainer = document.getElementById('map');
-      var mapOption = {
-        center: new kakao.maps.LatLng(37.566826, 126.9786567),
+      const mapContainer = document.getElementById('map');
+      const mapOption = {
+        center: new kakao.maps.LatLng(35.2054, 126.8115), // 중심 좌표 설정
         level: 3
       };
       this.map = new kakao.maps.Map(mapContainer, mapOption);
       this.ps = new kakao.maps.services.Places();
       this.infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+      // 초기 위치 기반으로 은행 검색 및 현재 위치 표시
+      this.searchPlacesByCoords(35.2054, 126.8115);
+      this.displayCurrentLocation(35.2054, 126.8115);
     }).catch(error => {
       console.error('카카오맵 스크립트 로드 실패:', error);
     });
@@ -95,13 +99,24 @@ export default {
         return;
       }
 
-      // Combine selected city with keyword
-      var keyword = this.selectedCity + ' ' + this.keyword;
-      if (!keyword.replace(/^\s+|\s+$/g, '')) {
+      const keyword = this.selectedCity + ' ' + this.keyword;
+      if (!keyword.trim()) {
         alert('키워드를 입력해주세요!');
         return false;
       }
       this.ps.keywordSearch(keyword, this.placesSearchCB);
+    },
+    searchPlacesByCoords(latitude, longitude) {
+      if (!this.ps) {
+        console.error('Places 서비스 객체가 초기화되지 않았습니다.');
+        return;
+      }
+
+      const coords = new kakao.maps.LatLng(latitude, longitude);
+      this.ps.categorySearch('BK9', this.placesSearchCB, {
+        location: coords,
+        radius: 500 // 검색 반경 (단위: 미터)
+      });
     },
     placesSearchCB(data, status, pagination) {
       if (status === kakao.maps.services.Status.OK) {
@@ -109,109 +124,89 @@ export default {
         this.displayPagination(pagination);
       } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
         alert('검색 결과가 존재하지 않습니다.');
-        return;
       } else if (status === kakao.maps.services.Status.ERROR) {
         alert('검색 결과 중 오류가 발생했습니다.');
-        return;
       }
     },
     displayPlaces(places) {
-      var listEl = document.getElementById('placesList'),
-        menuEl = document.getElementById('menu_wrap'),
-        fragment = document.createDocumentFragment(),
-        bounds = new kakao.maps.LatLngBounds();
+      const listEl = document.getElementById('placesList');
+      const menuEl = document.getElementById('menu_wrap');
+      const fragment = document.createDocumentFragment();
+      const bounds = new kakao.maps.LatLngBounds();
 
       this.removeAllChildNods(listEl);
       this.removeMarker();
 
-      for (var i = 0; i < places.length; i++) {
-        var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
-          marker = this.addMarker(placePosition, i, places[i]),
-          itemEl = this.getTableRow(i, places[i]);
+      places.forEach((place, i) => {
+        const placePosition = new kakao.maps.LatLng(place.y, place.x);
+        const marker = this.addMarker(placePosition, i, place);
+        const itemEl = this.getTableRow(i, place);
 
         bounds.extend(placePosition);
 
-        (function (marker, place) {
-          kakao.maps.event.addListener(marker, 'click', function () {
-            this.displayInfowindow(marker, place);
-          }.bind(this));
-          itemEl.onclick = function () {
-            this.map.setCenter(marker.getPosition());
-            this.displayInfowindow(marker, place);
-          }.bind(this);
-        }.bind(this))(marker, places[i]);
+        kakao.maps.event.addListener(marker, 'click', () => {
+          this.displayInfowindow(marker, place);
+        });
+        itemEl.onclick = () => {
+          this.map.setCenter(marker.getPosition());
+          this.displayInfowindow(marker, place);
+        };
 
         fragment.appendChild(itemEl);
-      }
+      });
 
       listEl.appendChild(fragment);
       menuEl.scrollTop = 0;
       this.map.setBounds(bounds);
     },
     getTableRow(index, place) {
-      var el = document.createElement('tr'),
-        itemStr = '<td>' + (index + 1) + '</td>' +
-          '<td><a href="https://place.map.kakao.com/' + place.id + '" target="_blank">' + place.place_name + '</a></td>';
-
-      if (place.road_address_name) {
-        itemStr += '<td>' + place.road_address_name + '</td>' +
-          '<td>' + place.address_name + '</td>';
-      } else {
-        itemStr += '<td>' + place.address_name + '</td>' +
-          '<td></td>';
-      }
-
-      itemStr += '<td>' + place.phone + '</td>';
+      const el = document.createElement('tr');
+      const itemStr = `
+        <td>${index + 1}</td>
+        <td><a href="https://place.map.kakao.com/${place.id}" target="_blank">${place.place_name}</a></td>
+        <td>${place.road_address_name || ''}</td>
+        <td>${place.address_name || ''}</td>
+        <td>${place.phone || ''}</td>
+      `;
 
       el.innerHTML = itemStr;
       return el;
     },
     addMarker(position, idx, place) {
-      var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
-        imageSize = new kakao.maps.Size(36, 37),
-        imgOptions = {
-          spriteSize: new kakao.maps.Size(36, 691),
-          spriteOrigin: new kakao.maps.Point(0, (idx * 46) + 10),
-          offset: new kakao.maps.Point(13, 37)
-        },
-        markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
-        marker = new kakao.maps.Marker({
-          position: position,
-          image: markerImage
-        });
+      const imageSrc = 'https://img.icons8.com/office/40/000000/marker.png'; // 파란색 마커 이미지 URL
+      const imageSize = new kakao.maps.Size(36, 37); // 이미지 크기
+      const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+      const marker = new kakao.maps.Marker({
+        position,
+        image: markerImage
+      });
 
       marker.setMap(this.map);
       this.markers.push(marker);
       return marker;
     },
     removeMarker() {
-      for (var i = 0; i < this.markers.length; i++) {
-        this.markers[i].setMap(null);
-      }
+      this.markers.forEach(marker => marker.setMap(null));
       this.markers = [];
     },
     displayPagination(pagination) {
-      var paginationEl = document.getElementById('pagination'),
-        fragment = document.createDocumentFragment(),
-        i;
+      const paginationEl = document.getElementById('pagination');
+      const fragment = document.createDocumentFragment();
 
       while (paginationEl.hasChildNodes()) {
         paginationEl.removeChild(paginationEl.lastChild);
       }
 
-      for (i = 1; i <= pagination.last; i++) {
-        var el = document.createElement('a');
-        el.href = "#";
+      for (let i = 1; i <= pagination.last; i++) {
+        const el = document.createElement('a');
         el.innerHTML = i;
 
         if (i === pagination.current) {
           el.className = 'on';
         } else {
-          el.onclick = (function (i) {
-            return function () {
-              pagination.gotoPage(i);
-            };
-          })(i);
+          el.onclick = () => {
+            pagination.gotoPage(i);
+          };
         }
 
         fragment.appendChild(el);
@@ -219,14 +214,31 @@ export default {
       paginationEl.appendChild(fragment);
     },
     displayInfowindow(marker, place) {
-      var content = '<div style="padding:10px;z-index:1;width:300px;white-space:normal;text-align:left;">' +
-        '<h5><a href="https://place.map.kakao.com/' + place.id + '" target="_blank">' + place.place_name + '</a></h5>' +
-        '<span>주소1: ' + place.road_address_name + '</span>' +
-        '<br><span>주소2: ' + place.address_name + '</span>' +
-        '<br><span>전화번호: ' + place.phone + '</span>' +
-        '</div>';
+      const content = `
+        <div style="padding:10px;z-index:1;width:300px;white-space:normal;text-align:left;">
+          <h5><a href="https://place.map.kakao.com/${place.id}" target="_blank">${place.place_name}</a></h5>
+          <span>주소1: ${place.road_address_name || ''}</span>
+          <br><span>주소2: ${place.address_name || ''}</span>
+          <br><span>전화번호: ${place.phone || ''}</span>
+        </div>
+      `;
       this.infowindow.setContent(content);
       this.infowindow.open(this.map, marker);
+    },
+    displayCurrentLocation(latitude, longitude) {
+      if (this.currentLocationMarker) {
+        this.currentLocationMarker.setMap(null);
+      }
+      
+      const imageSrc = 'https://img.icons8.com/fluency/48/000000/marker.png'; // 빨간색 마커 이미지 URL
+      const imageSize = new kakao.maps.Size(36, 37); // 이미지 크기
+      const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+      this.currentLocationMarker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(latitude, longitude),
+        image: markerImage
+      });
+
+      this.currentLocationMarker.setMap(this.map);
     },
     removeAllChildNods(el) {
       while (el.hasChildNodes()) {
@@ -263,71 +275,49 @@ export default {
   align-items: center;
 }
 
-.search-input select {
-  padding: 10px;
-  font-size: 1em;
-  margin-right: 10px;
-}
-
+.search-input select,
 .search-input input {
-  flex: 1;
-  padding: 10px;
-  font-size: 1em;
   margin-right: 10px;
 }
 
 .search-input button {
-  padding: 10px 20px;
-  font-size: 1em;
-  background-color: #333;
+  padding: 8px 16px;
+  background-color: #007bff;
   color: #fff;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-.search-input button:hover {
-  background-color: #555;
-}
-
 .map {
-  width: 80%;
+  width: 100%;
   height: 500px;
   margin-bottom: 20px;
-}
-
-#menu_wrap {
-  width: 80%;
 }
 
 .places-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
 }
 
 .places-table th,
 .places-table td {
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: center;
+  text-align: left;
 }
 
 .places-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+  background-color: #f2f2f2;
 }
 
-.places-table td a {
-  color: #333;
-  text-decoration: none;
-}
-
-.places-table td a:hover {
-  text-decoration: underline;
+.places-table tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
 #pagination {
   text-align: center;
+  justify-content: center; /* 중앙 정렬 */
   margin: 10px 0;
 }
 
@@ -339,11 +329,11 @@ export default {
   border-radius: 3px;
   text-decoration: none;
   color: #333;
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 
-#pagination a.on {
-  background-color: #333;
-  color: #fff;
-  border-color: #333;
+.pagination a.on {
+  background-color: #0056b3;
 }
 </style>
+
