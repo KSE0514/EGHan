@@ -61,6 +61,9 @@ onMounted(()=>{
         </li>
       </ul>
     </div>
+
+    <!-- <canvas ref="chartCanvas"></canvas> -->
+
   </div>
 </template>
 
@@ -70,9 +73,50 @@ import { onMounted } from 'vue';
 
 const store = useCounterStore()
 
+
+
+// function drawChart() {
+//   // 가입한 상품의 금리 정보를 가져와서 labels와 data 배열에 저장합니다.
+//   const products = store.userInfo.product_user;
+//   const labels = products.map(product => product.fin_prdt_nm);
+//   const data = products.map(product => product.금리_정보_키); // 실제로는 해당 키를 바꿔야 합니다.
+
+//   // 차트를 그리기 위한 데이터 설정
+//   const ctx = document.getElementById('chartCanvas').getContext('2d');
+//   const chartData = {
+//     labels: labels,
+//     datasets: [{
+//       label: '금리 정보',
+//       backgroundColor: 'rgba(255, 99, 132, 0.2)',
+//       borderColor: 'rgba(255, 99, 132, 1)',
+//       borderWidth: 1,
+//       data: data,
+//     }],
+//   };
+
+//   // 차트 옵션 설정
+//   const chartOptions = {
+//     scales: {
+//       y: {
+//         beginAtZero: true,
+//       },
+//     },
+//   };
+
+//   // 차트 객체 생성
+//   new Chart(ctx, {
+//     type: 'bar',
+//     data: chartData,
+//     options: chartOptions,
+//   });
+// }
+
+
+
 onMounted(() => {
   if (store.isLogin) {
     store.getUserInfo()
+    // drawChart()
   }
 })
 
