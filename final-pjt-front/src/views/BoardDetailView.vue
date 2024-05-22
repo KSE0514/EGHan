@@ -10,8 +10,8 @@
     <RouterLink :to="{name: 'board'}"><button>뒤로가기</button></RouterLink>
     <RouterLink 
       :to="{name: 'board-update', params:{id: article.id}}"
-    ><button v-if="article.user === store.userInfo.pk"  @click="update_article(article.id)">수정</button></RouterLink>
-    <button v-if="article.user === store.userInfo.pk"  @click="delete_article">삭제</button>
+    ><button v-if="article.user === store.userInfo.id"  @click="update_article(article.id)">수정</button></RouterLink>
+    <button v-if="article.user === store.userInfo.id"  @click="delete_article">삭제</button>
     <hr>
     <!-- 댓글 -->
     
