@@ -3,9 +3,11 @@
     <h2>적금 상품</h2>
     <ul>
       <li v-for="product in savingproducts" :key="product.id">
-        <h3 @click="goToDetail(product.fin_prdt_cd)">{{ product.fin_prdt_nm }}</h3>
-        <p><strong>Product Code:</strong> {{ product.fin_prdt_cd }}</p>
-        <p><strong>Company:</strong> {{ product.kor_co_nm }}</p>
+        <div @click="goToDetail(product.fin_prdt_cd)">
+          <h3>{{ product.fin_prdt_nm }}</h3>
+          <p><strong>Product Code:</strong> {{ product.fin_prdt_cd }}</p>
+          <p><strong>Company:</strong> {{ product.kor_co_nm }}</p>
+        </div>
         <!-- 다른 필드들도 필요에 따라 표시할 수 있습니다 -->
         <hr>
         <!-- <h4>Options</h4>
