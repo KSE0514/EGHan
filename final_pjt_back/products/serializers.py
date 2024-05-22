@@ -35,3 +35,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'product_user', 'savingproduct_user','nickname','age','salary','money','financial_products']
+
+
+
+
+# 추천 상품을 위한 시리얼라이저
+class RecommendedProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['financial_products']  # 추천 상품 정보를 가져올 필드 선택

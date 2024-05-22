@@ -3,13 +3,14 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 import requests
 from django.http import JsonResponse
-from .serializers import DepositProductsSerializer,DepositOptionsSerializer,SavingProductsSerializer,SavingOptionsSerializer
+from .serializers import DepositProductsSerializer,DepositOptionsSerializer,SavingProductsSerializer,SavingOptionsSerializer,RecommendedProductSerializer
 from .models import DepositProducts,DepositOptions, SavingProducts, SavingOptions
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
 from accounts.serializers import UserSerializer
+
 
 # Create your views here.
 
@@ -247,19 +248,6 @@ def saving_product_detail(request,fin_prdt_cd):
 #     return Response(data)
 
 
-@api_view(['GET'])
-def age_recommend(request):
-    print(request.user)
-    # print(user)
-
-
-@login_required
-@api_view(['GET'])
-def product_list(request):
-    user = request.user  # 로그인된 사용자 정보
-    # 여기서 user 정보를 사용하여 필요한 로직을 구현
-    return render(request, 'products/product_list.html', {'user': user})
-
 
 # 상품 가입하기
 @api_view(['POST'])
@@ -337,3 +325,209 @@ def get_exchange_rate(request):
         return JsonResponse(data, safe=False)
     else:
         return JsonResponse({"error": "Failed to fetch data"}, status=response.status_code)
+    
+
+
+
+
+
+## 추천 알고리즘
+
+from django.shortcuts import render
+from .models import DepositProducts, SavingProducts
+from django.db.models import Q, F, Avg, StdDev
+from collections import Counter
+from django.db.models import IntegerField ,ExpressionWrapper, Case, When
+import math
+
+# 연령대 별 추천
+@api_view(['GET'])
+def recommend_products_by_age(request):
+    # 현재 로그인된 사용자의 연령대 가져오기 (예시로 30대로 가정)
+    user_age = request.user.age // 10
+    # user_age = 34//10
+
+    # 해당 연령대에 속하는 사용자들의 financial_products 가져오기
+    users_in_age_group = User.objects.annotate(
+    age_divided_by_10=ExpressionWrapper(
+        F('age') / 10,
+        output_field=IntegerField()
+        )
+    ).filter(
+        age_divided_by_10=user_age
+    )
+    # 해당 연령대에 속하는 사용자들의 가입 상품코드를 모으기
+    all_product_codes = []
+    for user in users_in_age_group:
+        if user.financial_products:
+            all_product_codes.extend(user.financial_products.split(','))
+
+    # 각 상품의 가입 횟수를 카운트
+    product_counts = Counter(all_product_codes)
+    # print(product_counts)
+    # 가입 횟수가 많은 순으로 정렬된 상품 코드 목록 가져오기
+    sorted_product_codes = [product_code for product_code, count in product_counts.most_common()]
+
+    # print(sorted_product_codes)
+    # 상품 코드를 사용하여 상품 객체들을 조회
+    recommended_deposit_products = DepositProducts.objects.filter(fin_prdt_cd__in=sorted_product_codes)
+    recommended_saving_products = SavingProducts.objects.filter(fin_prdt_cd__in=sorted_product_codes)
+
+    
+    # 추천 상품을 직렬화하여 응답으로 보냄 (필요시 직렬화 과정 추가 필요)
+    deposit_serializer = DepositProductsSerializer(recommended_deposit_products, many=True)
+    saving_serializer = SavingProductsSerializer(recommended_saving_products, many=True)
+    # print(deposit_serializer.data)
+
+    sorted_deposit_products = sorted(deposit_serializer.data, key=lambda x: sorted_product_codes.index(x['fin_prdt_cd']))[:5]
+    sorted_saving_products = sorted(saving_serializer.data, key=lambda x: sorted_product_codes.index(x['fin_prdt_cd']))[:5]
+    return Response({
+        'recommended_deposit_products': sorted_deposit_products,
+        'recommended_saving_products': sorted_saving_products
+    })
+
+
+
+# 연봉(소득분위) 별 추천
+def get_salary_grade(salary):
+    if salary <= 1622890:
+        return 1
+    elif salary <= 2700482:
+        return 2
+    elif salary <= 3781000:
+        return 3
+    elif salary <= 4861000:
+        return 4
+    elif salary <= 5401000:
+        return 5
+    elif salary <= 7022000:
+        return 6
+    elif salary <= 8102000:
+        return 7
+    elif salary <= 10802000:
+        return 8
+    elif salary <= 16203609:
+        return 9
+    else:
+        return 10
+
+
+@api_view(['GET'])
+def recommend_products_by_salary(request):
+    # 현재 로그인된 사용자의 연봉 가져오기 (예시로 30대로 가정)
+    user_salary = request.user.salary
+    # user_salary = 3482904
+    user_salary_grade = get_salary_grade(user_salary)
+
+    # 동일 소득 등급에 속하는 사용자들의 financial_products 가져오기
+    users_in_salary_grade = User.objects.annotate(
+        salary_grade=Case(
+            When(salary__lt=1622890, then=1),
+            When(salary__lt=2700482, then=2),
+            When(salary__lt=3781000, then=3),
+            When(salary__lt=4861000, then=4),
+            When(salary__lt=5401000, then=5),
+            When(salary__lt=7022000, then=6),
+            When(salary__lt=8102000, then=7),
+            When(salary__lt=10802000, then=8),
+            When(salary__lt=16203609, then=9),
+            default=10,
+            output_field=IntegerField()
+        )
+    ).filter(
+        salary_grade=user_salary_grade
+    )
+
+    # 해당 소득 등급에 속하는 사용자들의 가입 상품코드를 모으기
+    all_product_codes = []
+    for user in users_in_salary_grade:
+        if user.financial_products:
+            all_product_codes.extend(user.financial_products.split(','))
+
+    # 각 상품의 가입 횟수를 카운트
+    product_counts = Counter(all_product_codes)
+
+    # 가입 횟수가 많은 순으로 정렬된 상품 코드 목록 가져오기
+    sorted_product_codes = [product_code for product_code, count in product_counts.most_common()]
+
+    # 상품 코드를 사용하여 상품 객체들을 조회
+    recommended_deposit_products = DepositProducts.objects.filter(fin_prdt_cd__in=sorted_product_codes)
+    recommended_saving_products = SavingProducts.objects.filter(fin_prdt_cd__in=sorted_product_codes)
+
+    # 추천 상품을 직렬화하여 응답으로 보냄 (필요시 직렬화 과정 추가 필요)
+    deposit_serializer = DepositProductsSerializer(recommended_deposit_products, many=True)
+    saving_serializer = SavingProductsSerializer(recommended_saving_products, many=True)
+
+    # 직렬화된 결과를 정렬
+    sorted_deposit_products = sorted(deposit_serializer.data, key=lambda x: sorted_product_codes.index(x['fin_prdt_cd']))[:5]
+    sorted_saving_products = sorted(saving_serializer.data, key=lambda x: sorted_product_codes.index(x['fin_prdt_cd']))[:5]
+
+    return Response({
+        'recommended_deposit_products': sorted_deposit_products,
+        'recommended_saving_products': sorted_saving_products
+    })
+
+
+
+# 자산별 추천
+def get_percentile_rank(value, values):
+    # 자산이 상위 몇프로인지 계산
+    sorted_values = sorted(values)
+    rank = sorted_values.index(value) / len(sorted_values)
+    return rank * 100
+
+@api_view(['GET'])
+def recommend_products_by_money(request):
+    # 모든 사용자의 자산 정보를 가져옴
+    all_users = User.objects.all()
+    user_money_list = [user.money for user in all_users]
+
+    # 현재 로그인된 사용자의 자산 가져오기 (예시로 로그인된 사용자의 id를 1로 가정)
+    current_user = User.objects.get(id=request.user.id)
+    user_money = current_user.money
+    # user_money = 48391334
+
+    # 자산의 평균과 표준편차 계산
+    # avg_money = sum(user_money_list) / len(user_money_list)
+    # std_dev_money = math.sqrt(sum((x - avg_money) ** 2 for x in user_money_list) / len(user_money_list))
+
+    # 사용자의 자산이 상위 몇 퍼센트인지 계산
+    user_percentile = get_percentile_rank(user_money, user_money_list)
+
+    # 사용자의 자산이 속하는 구간 계산
+    asset_group = min(4, int(user_percentile // 20)) + 1
+
+    # 해당 자산 구간에 속하는 사용자들의 financial_products 가져오기
+    percentile_range = [(i * 20, (i + 1) * 20) for i in range(5)]
+    lower_bound, upper_bound = percentile_range[asset_group - 1]
+    
+    users_in_asset_group = [user for user in all_users if lower_bound <= get_percentile_rank(user.money, user_money_list) < upper_bound]
+    
+    # 해당 자산 구간에 속하는 사용자들의 가입 상품코드를 모으기
+    all_product_codes = []
+    for user in users_in_asset_group:
+        if user.financial_products:
+            all_product_codes.extend(user.financial_products.split(','))
+
+    # 각 상품의 가입 횟수를 카운트
+    product_counts = Counter(all_product_codes)
+
+    # 가입 횟수가 많은 순으로 정렬된 상품 코드 목록 가져오기
+    sorted_product_codes = [product_code for product_code, count in product_counts.most_common()]
+
+    # 상품 코드를 사용하여 상품 객체들을 조회
+    recommended_deposit_products = DepositProducts.objects.filter(fin_prdt_cd__in=sorted_product_codes)
+    recommended_saving_products = SavingProducts.objects.filter(fin_prdt_cd__in=sorted_product_codes)
+
+    # 추천 상품을 직렬화하여 응답으로 보냄 (필요시 직렬화 과정 추가 필요)
+    deposit_serializer = DepositProductsSerializer(recommended_deposit_products, many=True)
+    saving_serializer = SavingProductsSerializer(recommended_saving_products, many=True)
+
+    # 직렬화된 결과를 정렬
+    sorted_deposit_products = sorted(deposit_serializer.data, key=lambda x: sorted_product_codes.index(x['fin_prdt_cd']))[:5]
+    sorted_saving_products = sorted(saving_serializer.data, key=lambda x: sorted_product_codes.index(x['fin_prdt_cd']))[:5]
+
+    return Response({
+        'recommended_deposit_products': sorted_deposit_products,
+        'recommended_saving_products': sorted_saving_products
+    })
