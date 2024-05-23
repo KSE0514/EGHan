@@ -11,6 +11,41 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
 # Create your views here.
+from django.shortcuts import render
+
+# 챗봇 =====================================================
+# Create your views here.
+import openai
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+openai.api_key = "sk-proj-h93ycbUTNKWIpPWMi36yT3BlbkFJHMkKOepjz6MebPSbbx1y"
+
+# @csrf_exempt
+@api_view(['GET',])
+def chat(request):
+    print(1)
+    if request.method == "GET":
+        # data = json.loads(request.body)
+        data = request.data
+        print(data)
+        user_content = data.get("message")
+        messages = data.get("messages", [])
+        print(messages)
+        messages.append({"role": "user", "content": f"{user_content}"})
+        
+        try:
+            completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
+            assistant_content = completion.choices[0].message["content"].strip()
+            messages.append({"role": "assistant", "content": assistant_content})
+            return JsonResponse({"response": assistant_content, "messages": messages})
+        except openai.error.OpenAIError as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+# ==========================================================================
+
 @api_view(['GET',])
 # @permission_classes([IsAuthenticated])
 # @authentication_classes([TokenAuthentication])

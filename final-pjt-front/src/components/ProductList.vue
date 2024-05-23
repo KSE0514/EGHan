@@ -204,7 +204,7 @@ export default {
     const getOptions = (productCode) => {
       axios({
         method: 'get',
-        url: `http://127.0.0.1:8000/api/v1/deposit-product-options/${productCode}`
+        url: `http://127.0.0.1:8000/api/v1/deposit-product-options/${productCode}/`
       }).then((response) => {
         const product = products.value.find(prod => prod.fin_prdt_cd === productCode);
         if (product) {
@@ -269,13 +269,13 @@ export default {
 
 .product-table th,
 .product-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #d6a5a5;
   padding: 8px;
   text-align: center;
 }
 
 .product-table th {
-  background-color: #f4f4f4;
+  background-color: #ffddbd;
   font-weight: bold;
 }
 
@@ -287,5 +287,27 @@ export default {
 
 .product-table td ul li {
   margin-bottom: 5px;
+}
+
+
+h2 {    
+  padding-top: 10px;
+  padding-bottom: 5px;
+  /* font-family: 'WavvePADO-Regular'; */
+  font-family: 'GongGothicMedium';
+}
+
+@font-face {
+    font-family: 'WavvePADO-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/WavvePADO-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GongGothicMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 </style>

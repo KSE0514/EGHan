@@ -188,7 +188,7 @@ export const useCounterStore = defineStore('counter', () => {
       const {title, content, article_id} = payload
       axios({
         method: 'put',
-        url: `${API_URL}/boards/detail/${article_id}`,
+        url: `${API_URL}/boards/detail/${article_id}/`,
         data: {
           title, content, article_id
         },
@@ -210,7 +210,7 @@ export const useCounterStore = defineStore('counter', () => {
       // console.log(id)
       axios({
         method: 'post',
-        url:  `${API_URL}/boards/comment/create/${article_id}`,
+        url:  `${API_URL}/boards/comment/create/${article_id}/`,
         data: {
           content
         },
@@ -234,7 +234,7 @@ export const useCounterStore = defineStore('counter', () => {
     const comments_lst = function (article_id) {
       axios({
         method: 'get',
-        url:  `${API_URL}/boards/comment/create/${article_id}`,
+        url:  `${API_URL}/boards/comment/create/${article_id}/`,
       })
       .then((res) => {
         console.log('댓글 리스트 확인용', res.data)
@@ -246,7 +246,7 @@ export const useCounterStore = defineStore('counter', () => {
     const comment_delete = function (article_id, comment_id) {
       axios({
         method: 'delete',
-        url: `${API_URL}/boards/comment/delete/${comment_id}`,
+        url: `${API_URL}/boards/comment/delete/${comment_id}/`,
         headers: {
           Authorization: `Token ${token.value}`
         }

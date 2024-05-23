@@ -73,6 +73,8 @@ const gotoHome = function(){
     <RouterView />
     </div>
 </main>
+
+
     <!-- <HomeView /> -->
 </template>
 
@@ -87,7 +89,7 @@ const gotoHome = function(){
 }
 .nav-link {
     margin: 5px;
-    color : rgb(153, 38, 0);
+    color : rgb(0, 0, 0);
     /* font-family: 'April16th-Life'; */
     font-family: 'WavvePADO-Regular';
 }
@@ -101,6 +103,17 @@ const gotoHome = function(){
     /* background-color: rgb(255, 201, 100); */
     /* font-family: 'WavvePADO-Regular'; */
 }
+
+ul, li {
+    list-style: none;
+}
+
+li.on{
+    color: red;
+}
+
+
+
 
 @font-face {
     font-family: 'April16th-Life';

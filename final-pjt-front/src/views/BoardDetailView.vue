@@ -40,7 +40,7 @@ const detail = function() {
   console.log(`${API_URL}/boards/detail/${id}/`)
   axios({
     method: 'get',
-    url: `${API_URL}/boards/detail/${id}`
+    url: `${API_URL}/boards/detail/${id}/`
   })
     .then((res) => {
       console.log(res)
@@ -58,7 +58,7 @@ onMounted(() => {
 const delete_article = function() {
   axios({
     method: 'delete',
-    url: `${API_URL}/boards/detail/${id}`
+    url: `${API_URL}/boards/detail/${id}/`
   })
   .then((res) =>{
     console.log('삭제 완료')
