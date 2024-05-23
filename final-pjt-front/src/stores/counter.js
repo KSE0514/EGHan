@@ -272,5 +272,6 @@ export const useCounterStore = defineStore('counter', () => {
       })
     }
 
-  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst, comment_delete, update,get_user_info,profile}
+  return { signUp,logIn,isLogin,logout,getUserInfo,userInfo,updateProfile, board, articles, API_URL, comment_create, create, token, products,get_products, comments, comments_lst, comment_delete, update,get_user_info,profile},
+  {persist:true}
 })
