@@ -62,6 +62,14 @@
             <use href="#svg-check" />
           </svg>
         </div>
+        <div class="form-field">
+            <span>age</span>
+            <label for="update-age"><i class="fa fa-user"></i></label>
+            <input id="update-age" type="number" v-model="age"  required>
+            <svg>
+              <use href="#svg-check" />
+            </svg>
+          </div>
           <div class="form-field">
             <span>money</span>
             <label for="update-money"><i class="fa fa-user"></i></label>

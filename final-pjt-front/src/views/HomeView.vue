@@ -10,54 +10,65 @@ export default {
 };
 </script> -->
 
+<!-- HomeView.vue -->
+<!-- HomeView.vue -->
 <template>
-  <div>
-    <div class="welcome-message" ref="welcomeMessage" v-if="showWelcome">
-      <h1>Welcome to Our Website!</h1>
+  <div class="home-view">
+    <div class="welcome-message" :class="{ 'fade-in': showWelcome }">
+      <h1>Welcome to Our Financial Services!</h1>
+      <p>Discover the best financial products tailored for you.</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      showWelcome: false
-    };
-  },
-  mounted() {
-    this.showWelcomeMessage();
-  },
-  methods: {
-    showWelcomeMessage() {
-      this.showWelcome = true;
-      this.fadeInEffect();
-    },
-    fadeInEffect() {
-      let opacity = 0;
-      const interval = setInterval(() => {
-        if (opacity >= 1) {
-          clearInterval(interval);
-        }
-        // 요소에 접근하기 위해 $refs를 사용합니다.
-        if (this.$refs.welcomeMessage) {
-          this.$refs.welcomeMessage.style.opacity = opacity;
-        }
-        opacity += 0.01;
-      }, 10);
-    }
-  }
-};
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const showWelcome = ref(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    showWelcome.value = true;
+  }, 100); // 시간 지연 추가
+});
 </script>
 
 <style scoped>
+.home-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .welcome-message {
-  /* display: none; */
   text-align: center;
-  font-size: 24px;
-  margin-top: 100px;
+  opacity: 0;
+  font-family: 'WavvePADO-Regular';
+  /* font-size: x-large; */
+  animation: fade-in 4s infinite; /* 애니메이션 반복 */
+}
+
+
+@font-face {
+  font-family: 'WavvePADO-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/WavvePADO-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>
-
 
 

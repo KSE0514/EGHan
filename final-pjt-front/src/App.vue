@@ -80,7 +80,7 @@ const gotoHome = function(){
 
         <!-- 챗봇 -->
     <button v-if="isclick" @click="buttonclick" style="width: 53px; height: 30px; background-color: rgb(253, 253, 253) !important; position: fixed; left: 96%; top: 870px; border: 1px solid rgb(209, 209, 209); border-radius: 5px;">닫기</button>
-    <ChatComponent v-if="isclick" class="fixedchat"/>
+    <ChatComponent v-if="isclick" class="fixedchat" style="z-index: 1001;"/>
     <button v-else class="button" @click="buttonclick" style="position: fixed;">
         <p class="svgIcon" style="color: white; font-size: 20px;">?</p>
     </button>
@@ -90,7 +90,16 @@ const gotoHome = function(){
     </div>
 </main>
 
-
+<footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 EGHAN All rights reserved.</p>
+            <p>Follow us on 
+                <a href="#" target="_blank">Facebook</a>, 
+                <a href="#" target="_blank">Twitter</a>, 
+                <a href="#" target="_blank">Instagram</a>
+            </p>
+        </div>
+    </footer>
     <!-- <HomeView /> -->
 </template>
 
@@ -128,7 +137,32 @@ li.on{
     color: red;
 }
 
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* bottom: 50px; */
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    text-align: center;
+    border-top: 1px solid #e7e7e7;
+    z-index: 1000; /* Ensure it is above other content */
+    p {
+        margin: 0;
+        color: #6c757d;
+        a {
+            color: #007bff;
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
 
+main.container {
+    padding-bottom: 60px; /* Ensure content does not hide behind footer */
+}
 
 
 @font-face {
@@ -174,6 +208,7 @@ li.on{
   transition-duration: 0.3s;
   overflow: hidden;
   position: relative;
+  z-index: 1001;
 }
 
 .svgIcon {
