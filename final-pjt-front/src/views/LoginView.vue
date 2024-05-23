@@ -36,6 +36,13 @@
     </div>
     <p v-if="loginError" style="color: red;">로그인 정보가 일치하지 않습니다. 다시 시도해주세요.</p>
   </div>
+
+
+  <svg style="display:none;">
+  <symbol id="svg-check" viewBox="0 0 130.2 130.2">
+    <path d="M100.2,40.2 51.5,88.8 29.8,67.5 "/>
+  </symbol>
+</svg>
 </template>
 
 <script setup>
@@ -63,6 +70,8 @@ const login = function() {
       loginSuccess.value = false;
     });
 };
+
+
 </script>
 
 <style scoped lang="scss">
@@ -76,6 +85,7 @@ $bg1: #333342;
 $bg2: #4D4E63;
 $button: rgb(255, 201, 100);
 $border-radius: 12px;
+
 
 body {
   background: linear-gradient(135deg, $bg2, $bg1);

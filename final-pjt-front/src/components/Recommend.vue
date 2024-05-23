@@ -258,13 +258,17 @@ const goToDetail = function(productCode){
   }
 }
 
-h1{
+h1, h3{
   font-family: 'WavvePADO-Regular';
 }
 
 .radio{
   font-family: 'S-CoreDream-3Light';
   margin-right: 10px;
+}
+
+li{
+  font-family: 'S-CoreDream-3Light';
 }
 @font-face {
   font-family: 'WavvePADO-Regular';
