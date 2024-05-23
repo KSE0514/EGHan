@@ -151,8 +151,8 @@ export default {
           <td @click="goToDetail(product.fin_prdt_cd)">{{ product.fin_prdt_nm }}</td>
           <td v-for="term in displayTerms" :key="term">
             <ul>
-              <li v-if="hasOption(product, term)" v-for="option in getProductOptionsByTerm(product, term)" :key="option.id">
-                {{ option.intr_rate }}%
+              <li v-if="hasOption(product, term)" :key="`${product.id}-${term}`">
+                {{ getProductOptionByTerm(product, term).intr_rate }}%
               </li>
               <li v-else>-</li>
             </ul>
@@ -216,12 +216,12 @@ export default {
       });
     }
 
-    const getProductOptionsByTerm = (product, term) => {
-      return product.options.filter(option => option.save_trm === term);
+    const getProductOptionByTerm = (product, term) => {
+      return product.options.find(option => option.save_trm === term);
     }
 
     const hasOption = (product, term) => {
-      return getProductOptionsByTerm(product, term).length > 0;
+      return getProductOptionByTerm(product, term) !== undefined;
     }
 
     const filterProducts = () => {
@@ -244,7 +244,7 @@ export default {
     return {
       products,
       displayTerms,
-      getProductOptionsByTerm,
+      getProductOptionByTerm,
       hasOption,
       goToDetail,
       filterProducts,

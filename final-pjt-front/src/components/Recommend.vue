@@ -26,8 +26,10 @@
       </div>
       <div v-for="product in recommendedDeposit" :key="product.id">
         <ul>
-          <li @click="goToDetail(product.fin_prdt_cd)">
+          <li>
             {{ product.fin_prdt_nm }}
+            <span>
+            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -38,8 +40,10 @@
       </div>
       <div v-for="product in recommendedSaving" :key="product.id">
         <ul>
-          <li @click="goToDetail(product.fin_prdt_cd)">
+          <li>
             {{ product.fin_prdt_nm }}
+            <span>
+            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -53,8 +57,10 @@
       </div>
       <div v-for="product in recommendedDeposit_s" :key="product.id">
         <ul>
-          <li @click="goToDetail(product.fin_prdt_cd)">
+          <li>
             {{ product.fin_prdt_nm }}
+            <span>
+            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -65,8 +71,10 @@
       </div>
       <div v-for="product in recommendedSaving_s" :key="product.id">
         <ul>
-          <li @click="goToDetail(product.fin_prdt_cd)">
+          <li>
             {{ product.fin_prdt_nm }}
+            <span>
+            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -80,8 +88,10 @@
       </div>
       <div v-for="product in recommendedDeposit_m" :key="product.id">
         <ul>
-          <li @click="goToDetail(product.fin_prdt_cd)">
+          <li>
             {{ product.fin_prdt_nm }}
+            <span>
+            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -92,8 +102,10 @@
       </div>
       <div v-for="product in recommendedSaving_m" :key="product.id">
         <ul>
-          <li @click="goToDetail(product.fin_prdt_cd)">
+          <li>
             {{ product.fin_prdt_nm }}
+            <span>
+            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>

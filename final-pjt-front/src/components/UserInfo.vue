@@ -93,65 +93,116 @@ onMounted(()=>{
       </ul>
     </div>
 
-    <!-- <canvas ref="chartCanvas"></canvas> -->
+    <canvas ref="chartCanvas"></canvas>
 
   </div>
 </template>
 
 <script setup>
-import { useCounterStore } from '@/stores/counter'
-import { onMounted } from 'vue';
+import { onMounted, ref, nextTick } from 'vue';
+import axios from 'axios';
+import { useCounterStore } from '@/stores/counter';
+import Chart from 'chart.js';
+import { useRouter } from 'vue-router';
 
-const store = useCounterStore()
+const store = useCounterStore();
+const productOptions = ref({});
+const chartCanvas = ref(null);
+const router = useRouter()
 
-
-
-// function drawChart() {
-//   // 가입한 상품의 금리 정보를 가져와서 labels와 data 배열에 저장합니다.
-//   const products = store.userInfo.product_user;
-//   const labels = products.map(product => product.fin_prdt_nm);
-//   const data = products.map(product => product.금리_정보_키); // 실제로는 해당 키를 바꿔야 합니다.
-
-//   // 차트를 그리기 위한 데이터 설정
-//   const ctx = document.getElementById('chartCanvas').getContext('2d');
-//   const chartData = {
-//     labels: labels,
-//     datasets: [{
-//       label: '금리 정보',
-//       backgroundColor: 'rgba(255, 99, 132, 0.2)',
-//       borderColor: 'rgba(255, 99, 132, 1)',
-//       borderWidth: 1,
-//       data: data,
-//     }],
-//   };
-
-//   // 차트 옵션 설정
-//   const chartOptions = {
-//     scales: {
-//       y: {
-//         beginAtZero: true,
-//       },
-//     },
-//   };
-
-//   // 차트 객체 생성
-//   new Chart(ctx, {
-//     type: 'bar',
-//     data: chartData,
-//     options: chartOptions,
-//   });
-// }
+const goToDetail = function(productCode){
+      router.push(`/product/${productCode}`)
+    }
 
 
-
-onMounted(() => {
-  if (store.isLogin) {
-    store.getUserInfo()
-    // drawChart()
+async function fetchProductOptions(fin_prdt_cd) {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/api/v1/deposit-product-options/${fin_prdt_cd}/`);
+    productOptions.value[fin_prdt_cd] = response.data;
+  } catch (error) {
+    console.error(`Failed to fetch product options for ${fin_prdt_cd}`, error);
+    console.error('Response data:', error.response ? error.response.data : 'No response data');
   }
-})
+}
 
-console.log('사용자 정보',store.userInfo)
+async function fetchAllProductOptions() {
+  const productUsers = store.userInfo.product_user || [];
+  const promises = productUsers.map(product => fetchProductOptions(product.fin_prdt_cd));
+  await Promise.all(promises);
+}
+
+
+function calculateRatesForProducts() {
+  const productRates = [];
+
+  Object.keys(productOptions.value).forEach(fin_prdt_cd => {
+    const options = productOptions.value[fin_prdt_cd];
+    if (options.length > 0) {
+      const avgRate = options.reduce((acc, option) => acc + option.intr_rate2, 0) / options.length; // 각 상품의 옵션들의 평균 금리 계산
+      const maxRate = Math.max(...options.map(option => option.intr_rate2)); // 각 상품의 옵션들 중 최고 우대금리 계산
+      const productName = store.userInfo.product_user.find(product => product.fin_prdt_cd === fin_prdt_cd)?.fin_prdt_nm || 'Unknown Product';
+      productRates.push({ product: productName, avgRate, maxRate });
+    }
+  });
+
+  return productRates;
+}
+
+function drawChart() {
+  const productRates = calculateRatesForProducts();
+
+  const labels = productRates.map(rate => rate.product);
+  const avgData = productRates.map(rate => rate.avgRate);
+  const maxData = productRates.map(rate => rate.maxRate);
+
+  const ctx = chartCanvas.value.getContext('2d');
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: '평균 우대금리',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        data: avgData,
+      },
+      {
+        label: '최고 우대금리',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+        data: maxData,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        min: 0,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
+  };
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: chartData,
+    options: chartOptions,
+  });
+}
+
+onMounted(async () => {
+  if (store.isLogin) {
+    await store.getUserInfo();
+    await fetchAllProductOptions();
+    await nextTick();
+    drawChart();
+  }
+});
 </script>
 
 <style scoped>
