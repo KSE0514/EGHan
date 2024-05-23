@@ -1,38 +1,3 @@
-<!-- <template>
-    <div>
-      <p>사용자 이름: {{  store.userInfo.nickname }}</p>
-      <p>이메일 : {{ store.userInfo.email }}</p>
-      <p>나이: {{ store.userInfo.age }}</p>
-
-      <p>자산: {{ store.userInfo.money }}원</p>
-      <p>연봉: {{ store.userInfo.salary }}원</p>
-      <RouterLink :to="{name:'userinfoupdate'}"><button>회원정보 수정</button></RouterLink>
-    </div>
-    <div v-for="product in store.userInfo.financial_products">
-      <h5>가입한 상품 목록</h5>
-      <ul>
-        <li>{{ product }}</li>
-      </ul>
-    </div>
-</template>
-
-<script setup>
-import { useCounterStore } from '@/stores/counter'
-import { onMounted } from 'vue';
-const store = useCounterStore()
-
-onMounted(()=>{
-  if (store.isLogin){
-    store.getUserInfo()
-  }
-})
-</script>
-
-<style scoped>
-
-</style> -->
-
-
 <template>
   <main id="userinfo">
       <div class="flip-card">
@@ -40,8 +5,6 @@ onMounted(()=>{
             <div class="flip-card-front">
               <p>사용자 이름: {{ store.userInfo.nickname }}</p>
               <p>이메일 : {{ store.userInfo.email }}</p>
-                <!-- <p class="title">FLIP CARD</p> -->
-                <!-- <p>Hover Me</p> -->
             </div>
             <div class="flip-card-back">
               <p>사용자 이름: {{ store.userInfo.nickname }}</p>
@@ -49,16 +12,8 @@ onMounted(()=>{
               <p>나이: {{ store.userInfo.age }}</p>
               <p>자산: {{ store.userInfo.money }}원</p>
               <p>연봉: {{ store.userInfo.salary }}원</p>
-                <!-- <p class="title">BACK</p> -->
-                <!-- <p>Leave Me</p> -->
                 <RouterLink :to="{name:'userinfoupdate'}" class="nav-link">
-                  <button class="button">
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"> -->
-                      <!-- <path d="m18 0 8 12 10-8-4 20H4L0 4l10 8 8-12z"></path> -->
-                    <!-- </svg> -->
-                    회원정보 수정
-                  </button>
-                  <!-- <button>회원정보 수정</button> -->
+                  <button class="button">회원정보 수정</button>
                 </RouterLink>
             </div>
         </div>
@@ -66,17 +21,8 @@ onMounted(()=>{
   </main>
 
   <div>
-    <!-- <p>사용자 이름: {{ store.userInfo.nickname }}</p>
-    <p>이메일 : {{ store.userInfo.email }}</p>
-    <p>나이: {{ store.userInfo.age }}</p>
-    <p>자산: {{ store.userInfo.money }}원</p>
-    <p>연봉: {{ store.userInfo.salary }}원</p> -->
-    <!-- <RouterLink :to="{name:'userinfoupdate'}">
-      <button>회원정보 수정</button>
-    </RouterLink> -->
-    
     <div>
-      <h5>가입한 적금 상품 목록</h5>
+      <h5>가입한 예금 상품 목록</h5>
       <ul>
         <li v-for="product in store.userInfo.product_user" :key="product.fin_prdt_cd">
           {{ product.fin_prdt_nm }}
@@ -85,7 +31,7 @@ onMounted(()=>{
     </div>
 
     <div>
-      <h5>가입한 예금 상품 목록</h5>
+      <h5>가입한 적금 상품 목록</h5>
       <ul>
         <li v-for="product in store.userInfo.savingproduct_user" :key="product.fin_prdt_cd">
           {{ product.fin_prdt_nm }}
@@ -107,6 +53,7 @@ import { useRouter } from 'vue-router';
 
 const store = useCounterStore();
 const productOptions = ref({});
+const savingProductOptions = ref({});
 const chartCanvas = ref(null);
 const router = useRouter()
 
@@ -125,12 +72,23 @@ async function fetchProductOptions(fin_prdt_cd) {
   }
 }
 
-async function fetchAllProductOptions() {
-  const productUsers = store.userInfo.product_user || [];
-  const promises = productUsers.map(product => fetchProductOptions(product.fin_prdt_cd));
-  await Promise.all(promises);
+async function fetchSavingProductOptions(fin_prdt_cd) {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/api/v1/saving-product-options/${fin_prdt_cd}/`);
+    savingProductOptions.value[fin_prdt_cd] = response.data;
+  } catch (error) {
+    console.error(`Failed to fetch saving product options for ${fin_prdt_cd}`, error);
+    console.error('Response data:', error.response ? error.response.data : 'No response data');
+  }
 }
 
+async function fetchAllProductOptions() {
+  const productUsers = store.userInfo.product_user || [];
+  const savingProductUsers = store.userInfo.savingproduct_user || [];
+  const productPromises = productUsers.map(product => fetchProductOptions(product.fin_prdt_cd));
+  const savingProductPromises = savingProductUsers.map(product => fetchSavingProductOptions(product.fin_prdt_cd));
+  await Promise.all([...productPromises, ...savingProductPromises]);
+}
 
 function calculateRatesForProducts() {
   const productRates = [];
@@ -138,11 +96,22 @@ function calculateRatesForProducts() {
   Object.keys(productOptions.value).forEach(fin_prdt_cd => {
     const options = productOptions.value[fin_prdt_cd];
     if (options.length > 0) {
-      const avgRate = options.reduce((acc, option) => acc + option.intr_rate2, 0) / options.length; // 각 상품의 옵션들의 평균 금리 계산
-      const maxRate = Math.max(...options.map(option => option.intr_rate2)); // 각 상품의 옵션들 중 최고 우대금리 계산
+      const avgRate = options.reduce((acc, option) => acc + option.intr_rate, 0) / options.length;
+      const maxRate = Math.max(...options.map(option => option.intr_rate2));
       const productName = store.userInfo.product_user.find(product => product.fin_prdt_cd === fin_prdt_cd)?.fin_prdt_nm || 'Unknown Product';
       productRates.push({ product: productName, avgRate, maxRate });
     }
+  });
+
+  Object.keys(savingProductOptions.value).forEach(fin_prdt_cd => {
+    const options = savingProductOptions.value[fin_prdt_cd];
+    if (options.length > 0) {
+      const avgRate = options.reduce((acc, option) => acc + option.intr_rate, 0) / options.length;
+      const maxRate = Math.max(...options.map(option => option.intr_rate2));
+      const productName = store.userInfo.savingproduct_user.find(product => product.fin_prdt_cd === fin_prdt_cd)?.fin_prdt_nm || 'Unknown Product';
+      productRates.push({ product: productName, avgRate, maxRate });
+    }
+    console.log('옵션',options)
   });
 
   return productRates;
@@ -212,7 +181,6 @@ onMounted(async () => {
   justify-content: center;
 }
 .flip-card {
-  /* position: absolute; */
   background-color: transparent;
   width: 380px;
   height: 508px;
