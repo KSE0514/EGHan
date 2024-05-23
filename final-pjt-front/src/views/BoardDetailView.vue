@@ -3,9 +3,9 @@
     <!-- <h1>{{ route.params.id }}번 게시글 DetailView</h1> -->
     <h1>{{ article.title }}</h1>
     <p>작성자: {{ article.username }}</p>
-    <p>작성일: {{ article.created_at }}</p>
-    <p>마지막 수정일: {{ article.updated_at }}</p>
-    <div style="border: 1px solid gray; height: 100px; padding: 10px;">{{ article.content }}</div>
+    <p class="p">작성일: {{ article.created_at }}</p>
+    <p class="p">마지막 수정일: {{ article.updated_at }}</p>
+    <div style="border: 1px solid gray; height: 100px; padding: 10px; border-radius: 10px;">{{ article.content }}</div>
     <br>
     <RouterLink :to="{name: 'board'}"><button>뒤로가기</button></RouterLink>
     <RouterLink 
@@ -80,5 +80,19 @@ const delete_article = function() {
 </script>
 
 <style scoped>
+p{
+  font-family:'S-CoreDream-3Light' ;
+}
+  .p {
+    margin: 5px 0; /* 위아래 여백을 5px로 설정 */
+    color: gray;
+  }
 
+
+  @font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+}
 </style>

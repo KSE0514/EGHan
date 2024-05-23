@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="comment_div">
     <hr>
     <form @submit.prevent="comment_cr">
       <label for="comment">댓글 작성</label><br>
-      <textarea name="comment" id="comment" cols="30" rows="3" style="width: 100%;" v-model="comment"></textarea>
+      <textarea name="comment" id="comment" cols="30" rows="3" style="width: 100%; border-radius:10px;" v-model="comment"></textarea>
       <input type="submit" value="등록">
     </form>
     <br>
@@ -56,5 +56,15 @@ onMounted(() => {
 #comment_list {
   background-color: rgba(255, 249, 224, 0.897);
   border: 1px solid black;
+}
+
+.comment_div{
+  font-family: 'S-CoreDream-3Light';
+}
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
 }
 </style>

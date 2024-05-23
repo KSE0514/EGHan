@@ -1,7 +1,7 @@
 <template>
   <div>
-    <a href="#" @click="showDeposit">예금</a> |
-    <a href="#" @click="showSaving">적금</a>
+    <a href="#" @click="showDeposit" class="nav-link">예금</a> |
+    <a href="#" @click="showSaving" class="nav-link">적금</a>
 
     <!-- 하위 컴포넌트를 조건부 렌더링하는 부분 -->
     <div v-if="showingDeposit">
@@ -47,4 +47,18 @@ export default {
 
 <style scoped>
 /* 스타일 정의 */
+a{
+  font-family:'S-CoreDream-3Light' ;
+  text-decoration: none;
+  display: inline;
+  color: rgba(94, 13, 13, 0.781);
+  font-weight: bold;
+}
+
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+}
 </style>

@@ -253,7 +253,7 @@ onMounted(async () => {
   cursor: pointer;
   text-shadow: 2px 2px 3px rgb(136 0 136 / 50%);
   background: linear-gradient(
-      15deg,
+      /* 15deg,
       #880088,
       #aa2068,
       #cc3f47,
@@ -262,13 +262,25 @@ onMounted(async () => {
       #de6f3d,
       #cc3f47,
       #aa2068,
-      #880088
+      #880088 */
+      15deg,
+      rgba(136, 0, 136, 0.5),
+      rgba(170, 32, 104, 0.5),
+      rgba(204, 63, 71, 0.5),
+      rgba(222, 111, 61, 0.5),
+      rgba(240, 159, 51, 0.5),
+      rgba(222, 111, 61, 0.5),
+      rgba(204, 63, 71, 0.5),
+      rgba(170, 32, 104, 0.5),
+      rgba(136, 0, 136, 0.5)
     )
     no-repeat;
   background-size: 300%;
   background-position: left center;
   transition: background 0.3s ease;
   color: #fff;
+  font-family:'S-CoreDream-3Light' ;
+  font-weight: bolder;
 }
 
 .button:hover {
@@ -285,7 +297,9 @@ onMounted(async () => {
   fill: #f09f33;
   transition: 0.3s ease;
 }
-
+p{
+  font-family: 'S-CoreDream-3Light';
+}
 h4{
   font-family: 'WavvePADO-Regular';
   text-align: center;

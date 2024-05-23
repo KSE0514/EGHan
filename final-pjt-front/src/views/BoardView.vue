@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>BoardView</h1>
+    <h1>자유게시판</h1>
     <RouterLink :to="{name: 'board-create'}">
       <button>작성하기</button>
       <!-- <input type="submit" value="작성하기"> -->
@@ -81,13 +81,25 @@ h1 {
   font-family: 'WavvePADO-Regular';
 }
 
+h5{
+  font-family: 'S-CoreDream-3Light';
+  font-weight: bolder;
+}
+p{
+  font-family: 'S-CoreDream-3Light';
+}
 @font-face {
     font-family: 'WavvePADO-Regular';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/WavvePADO-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
-
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+}
 #article {
   margin: 0px;
 }
