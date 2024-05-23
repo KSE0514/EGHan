@@ -13,6 +13,8 @@ from rest_framework.authentication import TokenAuthentication
 # Create your views here.
 from django.shortcuts import render
 
+from django.conf import settings
+
 # 챗봇 =====================================================
 # Create your views here.
 import openai
@@ -20,7 +22,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-openai.api_key = "sk-proj-h93ycbUTNKWIpPWMi36yT3BlbkFJHMkKOepjz6MebPSbbx1y"
+openai.api_key = settings.AI_API_KEY
 
 # @csrf_exempt
 @api_view(['POST',])

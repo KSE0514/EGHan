@@ -15,7 +15,7 @@ from accounts.serializers import UserSerializer
 # Create your views here.
 
 
-API_KEY = '58cc79feef643e06def232dd07ed0b75'
+API_KEY = settings.API_KEY
 
 BASE_URL = 'http://finlife.fss.or.kr/finlifeapi/'
 

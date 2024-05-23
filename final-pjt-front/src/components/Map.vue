@@ -86,10 +86,11 @@ export default {
           return;
         }
 
+        const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY;
         const script = document.createElement('script');
         script.onload = () => kakao.maps.load(resolve);
         script.onerror = reject;
-        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=27600437382fd635191f58999fe5dc7e&libraries=services&autoload=false`;
+        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${MAP_API_KEY}&libraries=services&autoload=false`;
         document.head.appendChild(script);
       });
     },
