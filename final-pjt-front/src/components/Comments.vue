@@ -3,13 +3,15 @@
     <hr>
     <form @submit.prevent="comment_cr">
       <label for="comment">댓글 작성</label><br>
-      <textarea name="comment" id="comment" cols="30" rows="3" style="width: 100%; border-radius:10px;" v-model="comment"></textarea>
-      <input type="submit" value="등록">
+      <textarea placeholder="내용을 입력하세요." name="comment" id="comment" cols="30" rows="3" style="padding: 10px; margin-top: 10px; width: 100%; border-radius:10px;" v-model="comment"></textarea>
+      <div style="display: flex; flex-wrap: wrap; justify-content: end;">
+        <input type="submit"  class="btn btn-warning btn-sm" value="등록" style="width: 55px; display: inline-block; left: 70%; height: 35px;">
+      </div>
     </form>
     <br>
     <!-- 댓글 리스트 출력 -->
     <div v-if="store.comments">
-      <div class="card" v-for="comment in store.comments">
+      <div class="card" v-for="comment in store.comments" style="margin: 5px 0px;">
         <div class="card-body" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
         <div>{{ comment.content }} - {{ comment.username }}</div>
         <div v-if="comment.user === store.userInfo.id" href="#" style="color: red;" @click="comment_del(comment.id)">x</div>

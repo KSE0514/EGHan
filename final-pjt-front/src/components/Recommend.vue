@@ -29,7 +29,7 @@
           <li>
             {{ product.fin_prdt_nm }}
             <span>
-            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
+            <button id="btn-id" @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -43,7 +43,7 @@
           <li>
             {{ product.fin_prdt_nm }}
             <span>
-            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
+            <button id='btn-id' @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -60,7 +60,7 @@
           <li>
             {{ product.fin_prdt_nm }}
             <span>
-            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
+            <button id='btn-id' @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -74,7 +74,7 @@
           <li>
             {{ product.fin_prdt_nm }}
             <span>
-            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
+            <button id='btn-id' @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -91,7 +91,7 @@
           <li>
             {{ product.fin_prdt_nm }}
             <span>
-            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
+            <button id='btn-id' @click="goToDetail(product.fin_prdt_cd)" style="border-radius: 15px;">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -105,7 +105,7 @@
           <li>
             {{ product.fin_prdt_nm }}
             <span>
-            <button @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
+            <button id='btn-id' @click="goToDetail(product.fin_prdt_cd)">가입하러가기</button></span>
           </li>
         </ul>
       </div>
@@ -225,7 +225,7 @@ const goToDetail = function(productCode){
 .loader {
   display: block;
   --height-of-loader: 4px;
-  --loader-color: #0071e2;
+  --loader-color: #ff9e62;
   width: 130px;
   height: var(--height-of-loader);
   border-radius: 30px;
@@ -265,7 +265,15 @@ h1, h3{
 .radio{
   font-family: 'S-CoreDream-3Light';
   margin-right: 10px;
+  accent-color: red;
 }
+
+/* .radio:checked{
+  background-color: #22d3ee; 
+  border: 3px solid white; 
+  box-shadow: 0 0 0 1.6px #22d3ee; 
+} */
+
 
 li{
   font-family: 'S-CoreDream-3Light';
@@ -282,6 +290,47 @@ li{
      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
      font-weight: normal;
      font-style: normal;
+}
+
+#btn-id {
+  height: 40px;
+  padding: 5px 15px;
+ /* padding: 15px 25px; */
+ border: unset;
+ border-radius: 15px;
+ color: #212121;
+ z-index: 1;
+ background: #fffaf4;
+ position: relative;
+ font-weight: 1000;
+ font-size: 15px;
+ -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ transition: all 250ms;
+ overflow: hidden;
+}
+
+#btn-id::before {
+ content: "";
+ position: absolute;
+ top: 0;
+ left: 0;
+ height: 100%;
+ width: 0;
+ border-radius: 15px;
+ background-color: #ffb89e;
+ z-index: -1;
+ -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+ transition: all 250ms
+}
+
+#btn-id:hover {
+ color: #ffffff;
+}
+
+#btn-id:hover::before {
+ width: 100%;
 }
 /* .spinner {
   font-size: 28px;

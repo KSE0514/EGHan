@@ -25,7 +25,7 @@
           <option value="제주">제주</option>
         </select>
         <input type="text" id="keyword" placeholder="키워드를 입력해주세요" v-model="keyword" @keyup.enter="searchPlaces" />
-        <button @click="searchPlaces">검색하기</button>
+        <button type="button" class="btn btn-warning" @click="searchPlaces">검색하기</button>
       </div>
     </div>
     <div id="map" class="map"></div>

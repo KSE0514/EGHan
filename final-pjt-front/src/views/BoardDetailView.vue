@@ -5,28 +5,34 @@
     <p>작성자: {{ article.username }}</p>
     <p class="p">작성일: {{ article.created_at }}</p>
     <p class="p">마지막 수정일: {{ article.updated_at }}</p>
-    <div style="border: 1px solid gray; height: 100px; padding: 10px; border-radius: 10px;">{{ article.content }}</div>
+    <div style="margin-top: 10px; border: 1px solid gray; height: 100px; padding: 10px; border-radius: 10px;">{{ article.content }}</div>
     <br>
     <RouterLink :to="{name: 'board'}" class="nav-link" style="display: inline-block;">
       <button class="back">
-        <svg class="svg-icon" fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><g stroke="#ff342b" stroke-linecap="round" stroke-width="1.5"><path d="m3.33337 10.8333c0 3.6819 2.98477 6.6667 6.66663 6.6667 3.682 0 6.6667-2.9848 6.6667-6.6667 0-3.68188-2.9847-6.66664-6.6667-6.66664-1.29938 0-2.51191.37174-3.5371 1.01468"></path><path d="m7.69867 1.58163-1.44987 3.28435c-.18587.42104.00478.91303.42582 1.0989l3.28438 1.44986"></path></g></svg>
-        <span class="lable1">뒤로가기</span>
+        <span style="color: white;"><strong>←</strong></span>
+        <!-- <svg class="svg-icon" fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><g stroke="#ff342b" stroke-linecap="round" stroke-width="1.5"><path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path></g></svg> -->
+        <span class="lable1" style="color: white;">이전</span>
       </button>
       <!-- <button>뒤로가기</button> -->
     </RouterLink>
+    <div style="display: inline-block; width: 78%;"></div>
     <RouterLink 
       :to="{name: 'board-update', params:{id: article.id}}"
     class="nav-link" style="display: inline-block;">
     <button v-if="article.user === store.userInfo.id"  @click="update_article(article.id)" class="btn">
-      <svg class="svg-icon" fill="none" height="20" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#a649da" stroke-linecap="round" stroke-width="2"><path d="m20 20h-16"></path><path clip-rule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fill-rule="evenodd"></path></g></svg>
+      <!-- <svg class="svg-icon" fill="none" height="20" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#a649da" stroke-linecap="round" stroke-width="2"><path d="m20 20h-16"></path><path clip-rule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fill-rule="evenodd"></path></g></svg> -->
+      <span><strong>✏</strong></span> 
       <span class="lable">수정</span>
     </button></RouterLink>
-    <button v-if="article.user === store.userInfo.id"  @click="delete_article" class="back">
-      <svg class="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg"></svg>
-      <!-- <svg class="svg-icon" fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><g stroke="#ff342b" stroke-linecap="round" stroke-width="1.5"><path d="m3.33337 10.8333c0 3.6819 2.98477 6.6667 6.66663 6.6667 3.682 0 6.6667-2.9848 6.6667-6.6667 0-3.68188-2.9847-6.66664-6.6667-6.66664-1.29938 0-2.51191.37174-3.5371 1.01468"></path><path d="m7.69867 1.58163-1.44987 3.28435c-.18587.42104.00478.91303.42582 1.0989l3.28438 1.44986"></path></g></svg> -->
-        <span class="lable1">삭제</span>
-    </button>
-    <button v-if="article.user === store.userInfo.id"  @click="delete_article">삭제</button>
+
+    <!-- 삭제 -->
+    <div class="nav-link" style="display: inline-block;">
+      <button class="delete" v-if="article.user === store.userInfo.id"  @click="delete_article">
+        <!-- <svg class="svg-icon" fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><g stroke="#ff342b" stroke-linecap="round" stroke-width="1.5"><path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path></g></svg> -->
+        <span style="color: rgb(182, 0, 0);"><strong>X</strong></span>
+        <span class="lable2" style="color: rgb(182, 0, 0);">삭제</span>
+      </button></div>
+    <!-- <button v-if="article.user === store.userInfo.id"  @click="delete_article">삭제</button> -->
     <hr>
     <!-- 댓글 -->
     
@@ -112,6 +118,8 @@ p{
 }
 
 
+
+
 .btn {
   display: flex;
   justify-content: center;
@@ -168,9 +176,9 @@ p{
   padding: 6px 12px;
   gap: 8px;
   height: 30px;
-  width: 120px;
+  width: 90px;
   border: none;
-  background: #ff362b34;
+  background: #56565634;
   border-radius: 20px;
   cursor: pointer;
 }
@@ -178,13 +186,17 @@ p{
 .lable1 {
   line-height: 20px;
   font-size: 15px;
-  color: #FF342B;
+  color: #2f2f2f;
   font-family: sans-serif;
   letter-spacing: 1px;
 }
 
 .back:hover {
-  background: #ff362b52;
+  background: #e1e1e152;
+}
+
+.back:hover span {
+  color: black !important;
 }
 
 .back:hover .svg-icon {
@@ -200,4 +212,41 @@ p{
     transform: rotate(-360deg);
   }
 }
+
+
+/* 삭제 */
+.delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 12px;
+  gap: 8px;
+  height: 30px;
+  width: 90px;
+  border: none;
+  background: #ff000039;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.lable2 {
+  line-height: 20px;
+  font-size: 15px;
+  color: #2f2f2f;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+}
+
+.delete:hover {
+  background: #ffc7c752;
+}
+
+.delete:hover span {
+  color: rgb(147, 0, 0) !important;
+}
+
+.delete:hover .svg-icon {
+  animation: spin 2s linear infinite;
+}
+
 </style>

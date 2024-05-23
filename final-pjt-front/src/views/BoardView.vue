@@ -2,9 +2,10 @@
   <div>
     <h1>자유게시판</h1>
     <RouterLink :to="{name: 'board-create'}">
-      <button>작성하기</button>
+      <button id="btn-id">작성하기</button>
       <!-- <input type="submit" value="작성하기"> -->
     </RouterLink>
+    <div style="height: 5px;"></div>
     <hr style="margin-bottom: 0px;">
     <div v-if="store.articles">
       <ul v-for="article in store.articles" :key="article.id" id="article">
@@ -36,7 +37,7 @@ onMounted(() =>{
 </script>
 
 <style scoped>
-button {
+#btn-id {
   height: 40px;
   padding: 5px 15px;
  /* padding: 15px 25px; */
@@ -54,7 +55,7 @@ button {
  overflow: hidden;
 }
 
-button::before {
+#btn-id::before {
  content: "";
  position: absolute;
  top: 0;
@@ -69,11 +70,11 @@ button::before {
  transition: all 250ms
 }
 
-button:hover {
+#btn-id:hover {
  color: #ffffff;
 }
 
-button:hover::before {
+#btn-id:hover::before {
  width: 100%;
 }
 
