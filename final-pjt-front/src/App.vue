@@ -3,6 +3,15 @@ import { RouterLink, RouterView,useRouter } from 'vue-router'
 import HomeView from './views/HomeView.vue';
 import { useCounterStore } from './stores/counter';
 import Exchange from './components/Exchange.vue';
+import ChatComponent from '@/components/ChatComponent.vue'
+import { ref } from 'vue'
+
+const isclick = ref(false)
+
+const buttonclick = function() {
+    isclick.value = !isclick.value
+}
+
 
 const store = useCounterStore()
 const router = useRouter()
@@ -68,6 +77,13 @@ const gotoHome = function(){
         </div>
     </div>
     </nav>
+
+        <!-- 챗봇 -->
+    <button v-if="isclick" @click="buttonclick" style="width: 53px; height: 30px; background-color: rgb(253, 253, 253) !important; position: fixed; left: 96%; top: 870px; border: 1px solid rgb(209, 209, 209); border-radius: 5px;">닫기</button>
+    <ChatComponent v-if="isclick" class="fixedchat"/>
+    <button v-else class="button" @click="buttonclick" style="position: fixed;">
+        <p class="svgIcon" style="color: white; font-size: 20px;">?</p>
+    </button>
 <main class="container">
     <div style="margin: 20px;">
     <RouterView />
@@ -128,4 +144,77 @@ li.on{
     font-weight: normal;
     font-style: normal;
 }
+
+
+.fixedchat {
+    position: fixed;
+    left: 84%;
+    bottom: 50px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* -----chat gpt 버튼 스타일 ----- */
+.button {
+
+    left: 88%;
+    top: 830px;
+    /* bottom: 5px; */
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(255, 201, 51);
+  border: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 0px 4px rgba(255, 183, 76, 0.253);
+  cursor: pointer;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  position: relative;
+}
+
+.svgIcon {
+  width: 12px;
+  transition-duration: 0.3s;
+}
+
+.svgIcon path {
+  fill: white;
+}
+
+.button:hover {
+  width: 170px;
+  border-radius: 50px;
+  transition-duration: 0.3s;
+  background-color: rgb(255, 192, 156);
+  align-items: center;
+}
+
+.button:hover .svgIcon {
+  /* width: 20px; */
+  transition-duration: 0.3s;
+  transform: translateY(-200%);
+}
+
+.button::before {
+  position: absolute;
+  bottom: -20px;
+  content: "궁금한 게 있으신가요?";
+  color: white;
+  /* transition-duration: .3s; */
+  font-size: 0px;
+}
+
+.button:hover::before {
+    padding: 10px;
+  font-size: 13px;
+  opacity: 1;
+  bottom: unset;
+  /* transform: translateY(-30px); */
+  transition-duration: 0.3s;
+}
+/* --------------------------------- */
 </style>

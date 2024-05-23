@@ -23,10 +23,10 @@ import json
 openai.api_key = "sk-proj-h93ycbUTNKWIpPWMi36yT3BlbkFJHMkKOepjz6MebPSbbx1y"
 
 # @csrf_exempt
-@api_view(['GET',])
+@api_view(['POST',])
 def chat(request):
     print(1)
-    if request.method == "GET":
+    if request.method == "POST":
         # data = json.loads(request.body)
         data = request.data
         print(data)

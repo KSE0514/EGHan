@@ -296,22 +296,29 @@ export default {
 }
 
 .places-table {
+
+  justify-content: center; /* 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
   width: 100%;
   border-collapse: collapse;
 }
 
 .places-table th,
 .places-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #e6b6b6;
+  /* border: 1px solid #ddd; */
   padding: 8px;
   text-align: left;
 }
 
 .places-table th {
-  background-color: #f2f2f2;
+
+  text-align: center; /* 텍스트 중앙 정렬 */
+  background-color: #ffe0c3;
 }
 
 .places-table tr:nth-child(even) {
+
   background-color: #f2f2f2;
 }
 
@@ -335,5 +342,17 @@ export default {
 .pagination a.on {
   background-color: #0056b3;
 }
+
+h1 {
+  font-family: 'WavvePADO-Regular';
+}
+
+@font-face {
+    font-family: 'WavvePADO-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/WavvePADO-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
 </style>
 
