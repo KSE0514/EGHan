@@ -2,18 +2,18 @@
   <div>
     <h1>추천 상품</h1>
     <br>
-    <label for="age">
+    <label for="age" class="radio">
       <input type="radio" name="recommend" value="age" v-model="selectedOption" @click="recommend_age">
       <span>연령대별</span>
     </label>
 
-    <label for="salary">
+    <label for="salary" class="radio">
       <input type="radio" name="recommend" value="salary" v-model="selectedOption" @click="recommend_salary">
       <span>소득별</span>
     </label>
 
 
-    <label for="money">
+    <label for="money" class="radio">
       <input type="radio" name="recommend" value="money" v-model="selectedOption" @click="recommend_money">
       <span>자산별</span>
     </label>
@@ -256,6 +256,28 @@ const goToDetail = function(productCode){
     right: 0;
     left: unset;
   }
+}
+
+h1{
+  font-family: 'WavvePADO-Regular';
+}
+
+.radio{
+  font-family: 'S-CoreDream-3Light';
+  margin-right: 10px;
+}
+@font-face {
+  font-family: 'WavvePADO-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/WavvePADO-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
 }
 /* .spinner {
   font-size: 28px;

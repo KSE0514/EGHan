@@ -20,9 +20,9 @@
     </div>
   </main>
 
-  <div>
-    <div>
-      <h5>가입한 예금 상품 목록</h5>
+  <div style="margin-top: 30px;">
+    <div class="product">
+      <h4>가입한 예금 상품 목록</h4>
       <ul>
         <li v-for="product in store.userInfo.product_user" :key="product.fin_prdt_cd">
           {{ product.fin_prdt_nm }}
@@ -30,8 +30,8 @@
       </ul>
     </div>
 
-    <div>
-      <h5>가입한 적금 상품 목록</h5>
+    <div class="product">
+      <h4>가입한 적금 상품 목록</h4>
       <ul>
         <li v-for="product in store.userInfo.savingproduct_user" :key="product.fin_prdt_cd">
           {{ product.fin_prdt_nm }}
@@ -285,4 +285,48 @@ onMounted(async () => {
   fill: #f09f33;
   transition: 0.3s ease;
 }
+
+h4{
+  font-family: 'WavvePADO-Regular';
+  text-align: center;
+}
+
+.product li{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  /* margin-top: 10px; */
+  font-family:'S-CoreDream-3Light' ;
+}
+
+/* .product ul {
+  display: flex;
+  justify-content: center;
+}
+
+.product li {
+  margin: 0 10px;
+  list-style: none; 
+}
+
+.product li div {
+  display: flex;
+  justify-content: center;
+} */
+
+@font-face {
+  font-family: 'WavvePADO-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/WavvePADO-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+}
+
+
 </style>
