@@ -25,7 +25,7 @@ environ.Env.read_env(
 )
 
 API_KEY = env('API_KEY')
-MAP_API_KEY = env('MAP_API_KEY')
+VITE_MAP_API_KEY = env('VITE_MAP_API_KEY')
 AI_API_KEY = env('AI_API_KEY')
 
 
