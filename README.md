@@ -1,6 +1,6 @@
 # <img src='images/EGhan_logo.png' width=40px> EG HAN 금융 상품 추천 서비스
 
-<img src='images/eghanmain.PNG'>
+<img src='images/eghanmain.png'>
 
 ## Index
 
@@ -50,8 +50,8 @@
 - **적금 탭**: 시중의 적금 상품을 조회 할 수 있습니다.또한 탭을 통해 은행별로 상품을 모아볼 수 있습니다.
 
 <div style="display: flex; gap:10px ">
-  <img src="images/deposit.png" alt="예금 화면" width=50%>
-  <img src="images/saving.png" alt="적금 화면" width=50%>
+  <img src="images/deposit.png" alt="예금 화면" style="width: calc(50% - 10px)">
+  <img src="images/saving.png" alt="적금 화면" style="width: calc(50% - 10px)">
 </div>
 
 ### 게시판
@@ -60,8 +60,8 @@
 - **게시판 글 작성**: 금융 상품에 관해 자유롭게 글을 작성할 수 있습니다.
 
 <div style="display: flex; gap:10px ">
-  <img src="images/articles.png" alt="게시판 화면" width=50%>
-  <img src="images/post.png" alt="글작성 화면" width=50%>
+  <img src="images/articles.png" alt="게시판 화면" style="width: calc(50% - 10px)">
+  <img src="images/post.png" alt="글작성 화면" style="width: calc(50% - 10px)">
 </div>
 
 ### 상품 추천 서비스
@@ -71,11 +71,11 @@
 - **가입한 상품보기**: 사용자는 자신이 가입한 상품의 금리를 그래프로 확인 할 수 있습니다.
 
 <div style="display: flex; gap:10px ">
-  <img src="images/age.png" alt="추천 화면" width=50%>
-  <img src="images/detail.png" alt="상세보기 화면" width=50%>
+  <img src="images/age.png" alt="추천 화면" style="width: calc(50% - 10px)">
+  <img src="images/detail.png" alt="상세보기 화면" style="width: calc(50% - 10px)">
 </div>
 <br>
-  <img src="images/graph.png" alt="상품보기 화면" width=50%>
+  <img src="images/graph.png" alt="상품보기 화면" style="width: calc(50% - 10px)">
 
 ### 부가기능
 
@@ -84,11 +84,11 @@
 - **AI 챗봇 서비스**: 사용자들은 AI 챗봇을 통해 궁금한 점을 해결할 수 있습니다.
 
 <div style="display: flex; gap:10px ">
-  <img src="images/map.png" alt="지도 화면" width=50%>
-  <img src="images/exchange.png" alt="환율 화면" width=50%>
+  <img src="images/map.png" alt="지도 화면" style="width: calc(50% - 10px)">
+  <img src="images/exchange.png" alt="환율 화면" style="width: calc(50% - 10px)">
 </div>
 <br>
-  <img src="images/chatbot.png" alt="챗봇 화면" width=50%>
+  <img src="images/chatbot.png" alt="챗봇 화면" style="width: calc(50% - 10px)">
 
 ## 산출물
 
