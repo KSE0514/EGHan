@@ -318,8 +318,7 @@ import os
 from datetime import datetime
 
 def get_exchange_rate(request):
-    authkey = "WkgQAiW98R1p0dGJw4ssv16equukjVKB"
-    # authkey = os.getenv('EXCHANGE_API_KEY')  # 환경변수에서 API 키를 가져옵니다
+    authkey = os.getenv('EXCHANGE_API_KEY')  # 환경변수에서 API 키를 가져옵니다
     print("API Key:", authkey)  # API 키를 출력하여 확인
     if not authkey:
         return JsonResponse({"error": "API key not found"}, status=500)
